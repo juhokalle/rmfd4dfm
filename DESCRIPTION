@@ -5,11 +5,47 @@ Authors@R:
     person(given = "Juho",
            family = "Koistinen",
            role = c("aut", "cre"),
-           email = "juho.koistinen@helsinki.fi",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Estimation of impulse-response functions with a variety of parametrizations of DFMs.
+           email = "juho.koistinen@helsinki.fi")
+Description: This package contains the necessary functions and data for a
+    replication of the results in [1]. In particular, we provide functions
+    for the parametrization of right matrix fraction description (RMFD) in
+    echelon form and a subsequent estimation of the model using the EM
+    algorithm. The goal of the main functions is to produce structural
+    IRFs as outlined in [1]. Additionally we provide functions for the
+    estimation of structural IRFs given in [2]. This package builds on
+    packages rationalmatrices and RLDM authored by Bernd Funovits and
+    Wolfgang Scherrer. Since these packages may change and to ensure the
+    functioning of the package, we put the necessary functions from the
+    current versions of these packages into R scripts zz_ratmat.R and
+    zz_RLDM.R.  References: [1] Koistinen, J., and Funovits, B. (2022).
+    Estimation of Impulse-Response Functions with Dynamic Factor Models: A
+    New Parametrization.  arXiv preprint arXiv:2202.00310, available at
+    https://arxiv.org/pdf/2202.00310.pdf.  [2] Forni, M., Giannone, D.,
+    Lippi, M., & Reichlin, L. (2009).  Opening the black box: Structural
+    factor models with large cross sections.  Econometric Theory, 25(5),
+    1319-1347.
 License: MIT + file LICENSE
+Depends: 
+    R (>= 2.10)
+Imports:
+    corpcor,
+    dplyr,
+    ggplot2,
+    magrittr,
+    purrr,
+    Rcpp,
+    RcppArmadillo,
+    tibble
+Suggests:
+    fbi (>= 0.6.0),
+    gridExtra,
+    lubridate
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Remotes:  
+    cykbennie/fbi
