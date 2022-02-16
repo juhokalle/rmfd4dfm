@@ -7,9 +7,9 @@
 rmfd2stsp(rmfdsys, nu)
 }
 \arguments{
-\item{rmfdsys}{\link[rmfd4dfm]{rmfd} object}
+\item{rmfdsys}{\code{rmfd} object}
 
-\item{nu}{vector of right Kronecker indices}
+\item{nu}{vector of Kronecker indices}
 }
 \value{
 \code{ABCD}, matrix of dimensions \eqn{r+n x r+n} of the corresponding state space model,

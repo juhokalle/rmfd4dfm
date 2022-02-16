@@ -29,10 +29,10 @@ baingcriterion <- function(X, rmax, rvar = NULL)
   nobs = dim(X)[1]
   nvar = dim(X)[2]
   mu <- matrix(1, nrow=nobs,ncol=1)%*%apply(X, 2, mean)
-  Winv <- diag(apply(X, 2, sd)^-1)
+  Winv <- diag(apply(X, 2, stats::sd)^-1)
   x = (X-mu)%*%Winv
 
-  Gamma0 = cov(x)
+  Gamma0 = stats::cov(x)
   H <- eigen(Gamma0)$vectors
   V <- vector()
   for(j in 1:rmax){
@@ -99,7 +99,7 @@ abc_crit <- function(X, kmax, nbck = NULL, cmax = 3)
     Ns <- order(stats::runif(nvar))
     xs <- x[1:nobs, Ns[1:N]]
     xs <- scale(xs, center = TRUE, scale = TRUE)
-    eigv <- eigen(cov(xs), only.values = TRUE)$values
+    eigv <- eigen(stats::cov(xs), only.values = TRUE)$values
     for(k in 1:(kmax+1)){
       IC1[k,1] <- sum(eigv[k:N])
     }
@@ -122,7 +122,7 @@ abc_crit <- function(X, kmax, nbck = NULL, cmax = 3)
     ABC[1,1] <- kmax
     ABC[1,2:3] <- 0
   }
-  sabc <- apply(abc, 2, sd)
+  sabc <- apply(abc, 2, stats::sd)
   c1 <- 2
   for(ii in 1:length(cr)){
     if(sabc[ii]==0){
@@ -176,11 +176,13 @@ abc_crit <- function(X, kmax, nbck = NULL, cmax = 3)
 #'
 #' @examples
 #' tmp <- admissible_mods(4, 4)
-#' sample(1:length(tmp$nus), 1) %>% sapply(function(x)
-#'  cat("The qualified model no. ", x,
-#'      "has a Kronecker index structure ", tmp$nus[[x]], "with the
-#'  orders of the lag polynomials restricted to deg(c(z)) = ", tmp$degs[[x]][1],
-#'      " and deg(d(z)) = ", tmp$degs[[x]][2], "\n")) -> tmp
+#' # Print an example model structure
+#' sample(1:length(tmp$nus), 1) %>%
+#'   sapply(function(x)
+#'     cat("The qualified model no. ", x, "/", length(tmp$nus),
+#'     "has a Kronecker index structure (", tmp$nus[[x]], ") with the
+#'     orders of the lag polynomials restricted to deg(c(z)) =", tmp$degs[[x]][1],
+#'      " and deg(d(z)) =", tmp$degs[[x]][2], "\n")) -> tmpp
 admissible_mods <- function(q, max_nu, fix_r = TRUE){
 
   nus <- replicate(q, list(0:max_nu)) %>%
@@ -203,7 +205,7 @@ admissible_mods <- function(q, max_nu, fix_r = TRUE){
     tmpl_i <- tmpl_rmfd_echelon_ss(dim_out = q+1,
                                    nu = unlist(int_list[i,]$Var1),
                                    degs = unlist(int_list[i,]$Var2))
-    mod_i <- fill_template(th = runif(tmpl_i$tmpl$n.par, -1, 1),
+    mod_i <- fill_template(th = stats::runif(tmpl_i$tmpl$n.par, -1, 1),
                            template = tmpl_i$tmpl)
     ctr_mat <- ctr_matrix(mod_i$sys)
     obs_mat <- obs_matrix(mod_i$sys)

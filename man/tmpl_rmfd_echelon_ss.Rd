@@ -9,10 +9,10 @@ tmpl_rmfd_echelon_ss(dim_out, nu, degs = NULL)
 \arguments{
 \item{dim_out}{output dimension, i.e. number of variables}
 
-\item{nu}{vector of right Kronecker indices}
+\item{nu}{vector of Kronecker indices}
 
 \item{degs}{vector of length 2, where one can optionally specify the degrees of
-c(z) and d(z), either of the parameters must be equal to max(nu)}
+\code{c(z)} and \code{d(z)}, either of the parameters must be equal to max(nu)}
 }
 \description{
 In this template one obtains a pure echelon form by supplying the vector

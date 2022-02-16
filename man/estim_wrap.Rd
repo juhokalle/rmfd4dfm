@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimation_tools.R
 \name{estim_wrap}
 \alias{estim_wrap}
-\title{Estimation wrapper for RMFD-DF model}
+\title{Estimation of the D-DFM model for given data and model specification}
 \usage{
 estim_wrap(
   df,
@@ -10,38 +10,79 @@ estim_wrap(
   degs = NULL,
   maxit = 250,
   conv_crit = 0.001,
-  init0 = 0,
+  init0 = 1,
   verbose = TRUE,
   h = 50
 )
 }
 \arguments{
-\item{df}{\code{(T x N)}-dimensional data matrix}
+\item{df}{\eqn{T x n} data matrix, where \eqn{T} and \eqn{n}
+are the time series and cross-sectional dimensions, respectively}
 
-\item{nu}{\code{q}-dimensional vector of Kronecker indices}
+\item{nu}{\eqn{q}-dimensional vector of Kronecker indices}
 
-\item{degs}{optional, vector of length 2, defining the degrees of c(z) and d(z)}
+\item{degs}{Optional, vector of length 2, defining the lag orders of \eqn{c(z)} and \eqn{d(z)}}
 
-\item{maxit}{Maximum number of iterations in the estimation procedure, defaults to 250.}
+\item{maxit}{Maximum number of iterations in the estimation procedure, defaults to 250}
 
 \item{conv_crit}{Convergence criterion in the estimation, defaults to 1e-3}
 
-\item{init0}{specify either a non-negative integer with zero indicating no bootstrapping of initial values
-and non-zero value defining the number of bootstrap draws or a list containing initial values of the SSM
-and \eqn{(q x q)} covariance matrix of error term in state eqn.}
+\item{init0}{For the estimation of initial values, specify either
+\enumerate{
+\item a positive integer, with \code{init0 = 1}: "no bootstrap"; or
+\item a positive integer, with \code{init0 > 1}: "number of bootstrap draws"; or
+\item a list of elements containing pre-specified initial values of
+the SSM and \eqn{(q x q)} covariance matrix of error term in state equation
+}}
 
 \item{verbose}{Should the estimation process be printed?}
+
+\item{h}{The IRF horizon}
 }
 \value{
-The function returns a list containing the final model in a state space
-and RMFD format and the smoothed residuals series of the final model
+a list of elements
+\item{Sigma}{The \eqn{(q x q)} reduced form residual covariance matrix}
+\item{ll_val}{The log-likelihood value of the model}
+\item{conv_stat}{Convergence criterion and the model log-likelihood value
+for every iteration of the EM algorithm}
+\item{npar}{The number of estimated parameters in \eqn{c(z)} and \eqn{d(z)}}
+\item{aic}{Akaike IC for the model}
+\item{bic}{Bayesian IC for the model}
+\item{hqic}{Hannan-Quinn IC for the model}
+\item{rmfd_final}{The final model in \code{rmfd} format}
+\item{irf}{The estimated raw impulse response function in an array}
 }
 \description{
-This function estimates the model for a given data matrix and
+\code{estim_wrap} estimates the model for a given data matrix and
 a vector of Kronecker indices. The user must also specify the
 maximum number of iterations used for the estimation as well as
-the convergence criterion
+the convergence criterion.
 }
 \examples{
-df <- rnorm(100)
+df <- FRED_light$df
+# small Kronecker index dimension, should converge fast
+nu <- c(1,1)
+est_obj <- estim_wrap(df = df, nu = nu)
+# graphical analysis of the convergence of the EM algorithm
+\dontrun{
+# create data frame containing the number of iterations, log-likelihood
+# value of the model for given iteration and the convergence
+# criterion for plotting purposes
+d <- data.frame("iter" = 1:length(est_obj$conv_stat$ll_value),
+                "loglik" = est_obj$conv_stat$ll_value,
+                "conv.log10" = est_obj$conv_stat$conv_cr \%>\% log10)
+opar <- par()$mar # save default plot setup
+par(mar = c(5,5,2,5))
+with(d, plot(iter, conv.log10, type="l", col="red3",
+             ylab=expression(log[10](italic(Delta))),
+             ylim=c(-3,0)))
+par(new = T)
+with(d, plot(iter, loglik, pch=1, axes=F, xlab=NA, ylab=NA, cex=1.2))
+axis(side = 4)
+mtext(side = 4, line = 3, 'model log likelihood value')
+legend("topleft",
+       legend=c(expression(log[10](italic(Delta))), "log-likelihood"),
+       lty=c(1,0), pch=c(NA, 1), col=c("red3", "black"))
+# reset graphical parameters to default
+par(new = FALSE, mar = opar)}
 }

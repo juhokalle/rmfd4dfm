@@ -23,3 +23,4 @@ summarize the degree of non-stationarity and persistence of the
 variables. The number of lags at which autocorrelations are calculated
 and the grid of probabilities for the percent quantiles can be defined.
 }
+\keyword{internal}

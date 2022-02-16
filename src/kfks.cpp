@@ -11,7 +11,7 @@ using namespace Rcpp;
 //' @param dim_state value r
 //' @param only_ll boolean, return only log-likelihood calculated with KFss
 //'
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List kfks_cpp(const arma::mat& A, const arma::mat& C,
                     const arma::mat& R, const arma::mat& Q,

@@ -9,9 +9,9 @@ do_everything_fglr(df, r, k, h, nrep = 500, ci = 0.8)
 \arguments{
 \item{df}{list containing items:
 \enumerate{
-\item \code{df}, data in a tall matrix;
-\item \code{int_ix}, index coding the rows of the interest variables in the data;
-\item \code{trans_ix}, index giving the variable transformation codes
+\item \code{df}, data in a \eqn{T x n} matrix;
+\item \code{int_ix}, an index vector coding the columns corresponding to the variables of interest in the data;
+\item \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016)
 }}
 
 \item{r}{static factor dimension}
@@ -22,11 +22,28 @@ do_everything_fglr(df, r, k, h, nrep = 500, ci = 0.8)
 
 \item{nrep}{number of replications in the bootstrap}
 
-\item{ci}{confidence intervals for the IRFs}
+\item{ci}{confidence intervals for the IRFs
+
+The estimated models are identified recursively using Cholesky decomposition of the residual covariance
+matrix. As a default, the function returns the impulse responses to the third shock, the size of which
+is normalized to 0.5 on impact. For changing the shock of interest (i.e. not the third),
+and the normalization constant, the user should include store a vector of length 2 as \code{df$shock_ix}
+with the position of the shock of interest as the first element and the
+normalization constant as the second element. For a more flexible setup, such as identifying
+more than one shock or obtaining responses to many variables, the user can use function
+\code{\link{DfmRawImp}}, which returns the non-structural IRF.}
 }
 \value{
-
+Structural impulse response function as an array
 }
 \description{
-Estimate IRFs and associated bootstrap intervals for S-DFM
+\code{do_everything_fglr} is a user-friendly wrapper estimating
+the recursively identified S-DFM model and associated bootstrap
+intervals for IRFs within one function. The function allows the user
+to specify the model similarly to \code{\link{DfmRawImp}}, to which
+the user is referred for examples.
+}
+\seealso{
+McCracken, M. W., & Ng, S. (2016). FRED-MD: A monthly database for macroeconomic research.
+Journal of Business & Economic Statistics, 34(4), 574-589.
 }

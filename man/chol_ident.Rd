@@ -2,27 +2,27 @@
 % Please edit documentation in R/estimation_tools.R
 \name{chol_ident}
 \alias{chol_ident}
-\title{NO EXPORT:: Cholesky identification of the IRF}
+\title{Cholesky identification of the IRF}
 \usage{
 chol_ident(est_obj, int_vars, est_type = c("rmfd", "fglr"))
 }
 \arguments{
-\item{est_obj}{\link{estim_wrap} or \link{DfmRawImp} object containing the raw IRF and the matrix
+\item{est_obj}{\code{\link{estim_wrap}} or \code{\link{DfmRawImp}}
+object containing the raw IRF and the matrix
 used to obtain the lower triangular Cholesky factor}
 
 \item{int_vars}{vector denoting the variables of interest and the respective ordering}
+
+\item{est_type}{specify the DFM estimation method}
 }
 \value{
 An IRF array of the same size as the raw IRF used as an input
 }
 \description{
-This function carries out the recursive identification using the Cholesky decomposition
-of the \eqn{dim_in x dim_in} innovation covariance matrix. The resulting IRF has then
+\code{chol_ident} carries out the recursive identification using the Cholesky decomposition
+of the \eqn{(q x q)} innovation covariance matrix. The resulting IRF has then
 a structural interpretation depending on the ordering of the variables. The user
-must specify whether the estimation method of the DFM is FGLR or RMFD.
-NB! This function neither normalizes the shocks nor cumulates them, use
-\link{finalize_irfs} to this purpose.
+must specify whether the estimation method of the DFM is the S-DFM (\code{\link{DfmRawImp}})
+or D-DFM (\code{\link{estim_wrap}}).
 }
-\examples{
-rnorm(100)
-}
+\keyword{internal}

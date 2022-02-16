@@ -7,7 +7,7 @@
 init_vals(irf_obj, nu, degs = NULL, tmpl_mod)
 }
 \arguments{
-\item{irf_obj}{impulse response function object from \link[rmfd]{normalize_irf} of dimension (\eqn{n, q,} \code{lag.max}+1)}
+\item{irf_obj}{impulse response function object of dimension (\eqn{n, q,} \code{lag.max}+1)}
 
 \item{nu}{vector of  Kronecker indices}
 
@@ -22,7 +22,7 @@ a list of elements
 \item{sigma}{error covariance matrix}
 }
 \description{
-This function gives the initial values of the RMFD model in state space format.
+\code{init_vals} gives the initial values of the RMFD model in state space format.
 The initial values are calculated from the input IRF that is used to generate the Hankel matrix,
 which are used in the regressions to determine parameter matrices associated with the lag
 polynomials c(z) and d(z).

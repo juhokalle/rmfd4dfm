@@ -7,11 +7,11 @@
 lr_approx(ssmod, dim_in, lag.max = 30)
 }
 \arguments{
-\item{ssmod}{\link[rmfd2dfm]{stspmod} object of the square state space model.}
+\item{ssmod}{square state space model object}
 
-\item{dim_in}{the input dimension of the transformed IRF.}
+\item{dim_in}{the dynamic factor dimension of the DFM}
 
-\item{lag.max}{maximum lag to be passed onto function \link[rationalmatrices]{pseries}, default is 30.}
+\item{lag.max}{number of lags, default is 30}
 }
 \value{
 a list of elements:
@@ -19,7 +19,7 @@ a list of elements:
 \item{noise_L}{n x q matrix used to obtain tall IRF}
 }
 \description{
-\code{lr_approx} This helper function calculates a tall IRF from a square
-state space model using low-rank approximation.
+\code{lr_approx} calculates a tall IRF from a square
+state space model using low-rank approximation
 }
 \keyword{internal}

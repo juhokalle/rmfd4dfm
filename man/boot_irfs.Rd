@@ -2,15 +2,14 @@
 % Please edit documentation in R/estimation_tools.R
 \name{boot_irfs}
 \alias{boot_irfs}
-\title{Bootstrap confidence intervals for IRFs}
+\title{Obtain a bootstrap distribution of the IRFs}
 \usage{
 boot_irfs(
   df,
   nu,
-  degs,
-  maxit,
-  conv_crit,
-  init0,
+  degs = NULL,
+  maxit = 250,
+  conv_crit = 0.001,
   verbose,
   h,
   nrep,
@@ -23,27 +22,27 @@ boot_irfs(
 
 \item{nu}{\code{q}-dimensional vector of Kronecker indices}
 
-\item{degs}{optional, vector of length 2, defining the degrees of c(z) and d(z)}
+\item{degs}{optional, vector of length 2, defining the orders of c(z) and d(z)}
 
-\item{maxit}{Maximum number of iterations in the estimation procedure, defaults to 250.}
+\item{maxit}{Maximum number of iterations in the estimation procedure, defaults to 250}
 
 \item{conv_crit}{Convergence criterion in the estimation, defaults to 1e-3}
 
-\item{init0}{specify either a non-negative integer with zero indicating no bootstrapping of initial values
-and non-zero value defining the number of bootstrap draws or a list containing initial values of the SSM
-and \eqn{(q x q)} covariance matrix of error term in state eqn.}
-
 \item{verbose}{Should the estimation process be printed?}
 
-\item{h}{number of periods for which IRFs are calculated}
+\item{h}{the IRF horizon \eqn{h}}
 
 \item{nrep}{number of bootstrap draws}
 
-\item{save_file}{save IRF array at the end?}
+\item{int_vars}{\code{q}-dimensional vector coding the positions of the variables of interest}
+
+\item{save_file}{save the IRF array at the end?}
 }
 \value{
-
+An array of dimension \eqn{n x q h+1 x nrep} corresponding to the recursively identified
+structural impulse-response function
 }
 \description{
-Bootstrap confidence intervals for IRFs
+Obtain a bootstrap distribution of the IRFs
 }
+\keyword{internal}

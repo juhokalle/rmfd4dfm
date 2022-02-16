@@ -11,11 +11,10 @@ stsp2rmfd(stspsys, dim_out, nu, degs = NULL)
 
 \item{dim_out}{output dimension, i.e. number of variables}
 
-\item{nu}{vector of right Kronecker indices}
+\item{nu}{vector of Kronecker indices}
 
-\item{degs}{vector of length 2, where one can optionally specify the degrees of c(z) and d(z), either of the parameters must be equal to max(nu)}
-
-\item{addnoise}{is the model augmented with idiosyncratic noise component?}
+\item{degs}{vector of length 2, where one can optionally specify the degrees of \code{c(z)}
+and \code{d(z)}, either of the parameters must be equal to \code{max(nu)}}
 }
 \value{
 \code{rmfd} object corresponding to the state space setup

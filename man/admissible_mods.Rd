@@ -31,17 +31,20 @@ available at \url{https://arxiv.org/pdf/2202.00310.pdf}.
 \note{
 This is a rather crude way of obtaining the set of models satisfying the
 model selection criteria because the function simulates
-the model using parameter values from a \emph{U(-1,1)}-distribution and then
-running the checks. This entails that the function may not always find the
+the model parameters from a \emph{U(-1,1)}-distribution and then
+runs the checks. This entails that the function may not always find the
 maximum number of qualified models, and this being the case especially with
-specifications where the input dimension and maximum Kronecker index are given
-a high value. However, for a small values of these parameters the function
+specifications where the dynamic factor dimension and maximum Kronecker index are
+set to a high value. However, for a small values of these parameters the function
 should work fine.
 }
 \examples{
 tmp <- admissible_mods(4, 4)
-sample(1:length(tmp), 1) \%>\% sapply(function(x)
-  paste("The qualified model no. ", x,
-  "has a Kronecker index structure ", tmp$nus[[x]], "with the
-  orders of the lag polynomials restricted to ", tmp$degs[[x]]))
+# Print an example model structure
+sample(1:length(tmp$nus), 1) \%>\%
+  sapply(function(x)
+    cat("The qualified model no. ", x, "/", length(tmp$nus),
+    "has a Kronecker index structure (", tmp$nus[[x]], ") with the
+    orders of the lag polynomials restricted to deg(c(z)) =", tmp$degs[[x]][1],
+     " and deg(d(z)) =", tmp$degs[[x]][2], "\n")) -> tmpp
 }

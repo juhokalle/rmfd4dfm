@@ -100,8 +100,8 @@ init_vals <- function(irf_obj, nu, degs = NULL, tmpl_mod){
   rmfd_sys <- pseries2rmfd(obj = irf_normalised, Hsize = max(nu+1), mu=nu)$Xr
   # extract and restrict the degree of c(z) and d(z) according to the prespecified values
   # the polynomials remain unchanged if no restrictions to lag orders are made
-  rmfd_c <- rmfd_sys$c %>% unclass %>% .[, , 1:max(nu+1) %in% 1:(deg_c+1) ]
-  rmfd_d <- rmfd_sys$d %>% unclass %>% .[, , 1:max(nu+1) %in% 1:(deg_d+1) ]
+  rmfd_c <- unclass(rmfd_sys$c)[, , 1:max(nu+1) %in% 1:(deg_c+1)]
+  rmfd_d <- unclass(rmfd_sys$d)[, , 1:max(nu+1) %in% 1:(deg_d+1)]
   rmfd_sys <- rmfd(c = rmfd_c, d = rmfd_d)
   ss_init <- rmfd2stsp(rmfd_sys, nu = nu)
 
@@ -220,7 +220,7 @@ boot_init <- function(data, nu, degs = NULL, reg_prm = 6, nrep = 1, tmpl_mod = N
   boot_list <- replicate(nrep, init_wrap(data = data,
                                          nu = nu,
                                          degs = degs,
-                                         tmpl_mod = tmpl_mod,
+                                         tmpl_mod = tmpl_mod$tmpl,
                                          reg_prm = if(nrep>1) reg_prm else NULL))
   if(nrep>1){
     ll_vec <- sapply(1:nrep, function(x) smoothed_moments8(fill_template(boot_list[,x]$params0,

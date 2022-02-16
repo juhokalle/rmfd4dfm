@@ -2,7 +2,7 @@
 % Please edit documentation in R/intial_estimation.R
 \name{init_wrap}
 \alias{init_wrap}
-\title{Obtain initial values to start optimization}
+\title{Obtain initial values corresponding to a given model specification}
 \usage{
 init_wrap(data, nu, degs = NULL, tmpl_mod, reg_prm = NULL)
 }
@@ -14,22 +14,18 @@ init_wrap(data, nu, degs = NULL, tmpl_mod, reg_prm = NULL)
 
 \item{degs}{vector of length 2, where one can optionally specify the degrees of c(z) and d(z), either of the parameters must be equal to max(nu)}
 
+\item{tmpl_mod}{model template, see \code{rmfd4dfm:::tmpl_rmfd_echelon_ss}}
+
 \item{reg_prm}{regularization parameter governing the std deviation of the randomly drawn noise vector,
 see also \link[rmfd4dfm]{estim_wrap}}
 }
 \value{
 a list of elements
 \item{params0}{a vector of initial parameters}
-\item{sigma}{\code{q x q} error covariance matrix}
+\item{sigma}{\code{q x q} initial error covariance matrix}
 }
 \description{
-\code{init_wrap} estimates the initial values using a method introduced in
-Appendix C of \emph{Estimation of Impulse-Response Functions with Dynamic Factor Models: A New Parametrization}
-available at \url{https://arxiv.org/pdf/2202.00310.pdf}
+\code{init_wrap} estimates the initial values for a given model specification, this
+function is a helper to the function \code{boot_init}
 }
-\examples{
-nu <- c(1,1,1,1)
-tmp <- tmpl_rmfd_echelon_ss(dim_out = ncol(FRED_light$df), nu)
-inval <- init_wrap(data = FRED_light$df, nu = nu, tmpl_mod = tmp)
-
-}
+\keyword{internal}

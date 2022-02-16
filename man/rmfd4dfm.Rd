@@ -9,7 +9,7 @@ The \code{rmfd4dfm} package contains functions to estimate
 impulse-response functions with two specifications of a dynamic factor model,
 the so-called dynamic and static form of the DFM. This \code{R} package is
 an accompanying resource for replication purposes of the results given in
-the paper \emph{Estimation of Impulse-Response#' Functions with Dynamic Factor
+the paper \emph{Estimation of Impulse-Response Functions with Dynamic Factor
 Models: A New Parametrization} available at
 \url{https://arxiv.org/pdf/2202.00310.pdf}.
 }

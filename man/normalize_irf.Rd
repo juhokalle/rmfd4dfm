@@ -2,12 +2,12 @@
 % Please edit documentation in R/intial_estimation.R
 \name{normalize_irf}
 \alias{normalize_irf}
-\title{Normalise zero-lag coefficient of transfer function}
+\title{Normalize zero-lag coefficient of the IRF}
 \usage{
 normalize_irf(pseries_obj, type = c("identity", "lq_decomp"))
 }
 \arguments{
-\item{pseries_obj}{See \link[rmfd4dfm]{pseries}. Should have sufficiently many lags.}
+\item{pseries_obj}{IRF object, should have sufficiently many lags}
 
 \item{type}{Character string. Either \code{identity} or \code{lq_decomp}.
 In the former case the first submatrix of the tall transfer function will be transformed to the identity matrix.

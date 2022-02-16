@@ -4,27 +4,49 @@
 \alias{do_everything_svar}
 \title{Estimate IRFs and associated bootstrap intervals for SVAR}
 \usage{
-do_everything_svar(df, p, nrep = 500, h = 50, ci = 0.8)
+do_everything_svar(df, k, nrep = 500, h = 50, ci = 0.68)
 }
 \arguments{
 \item{df}{list containing items:
 \enumerate{
-\item \code{df}, data in a tall matrix;
-\item \code{int_ix}, index coding the rows of the interest variables in the data;
-\item \code{trans_ix}, index giving the variable transformation codes
+\item \code{df}, data in a \eqn{T x n} matrix;
+\item \code{int_ix}, an index vector coding the columns corresponding to the variables included in the SVAR;
+\item \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016)
 }}
 
-\item{p}{VAR degree}
+\item{k}{VAR order}
 
 \item{nrep}{number of replications in the bootstrap}
 
 \item{h}{h-step ahead IRFs}
 
-\item{ci}{confidence intervals for the IRFs}
+\item{ci}{confidence interval level for the IRFs, defaults to 0.68
+
+The estimated models are identified recursively using Cholesky decomposition of the residual covariance
+matrix. As a default, the function returns the impulse responses to the third shock, the size of which
+is normalized to 0.5 on impact. For changing the shock of interest (i.e. not the third),
+and the normalization constant, the user should include a vector of length 2 in the data object
+with name "shock_ix" with the position of the shock of interest as the first element and the
+normalization constant as the second element.}
 }
 \value{
 
 }
 \description{
-Estimate IRFs and associated bootstrap intervals for SVAR
+Similarly to other \code{do_everything_*} functions, \code{do_everything_svar}
+estimates the benchmark SVAR model and the associated IRFs with error bands.
+Note that the data object is similar as in the other do_everything_* functions,
+i.e. the data matrix contains all the variables and those included in the
+SVAR are indexed with a vector (see below).
+}
+\examples{
+# example from the paper: the data object is similar to the
+# other do_everything_* function, i.e. the data matrix
+# is the whole data
+FRED_light$int_ix <- c(6, 105, 77, 95)
+est_obj <- do_everything_svar(FRED_light, k = 9, nrep = 500, h = 50, ci = .68)
+}
+\seealso{
+McCracken, M. W., & Ng, S. (2016). FRED-MD: A monthly database for macroeconomic research.
+Journal of Business & Economic Statistics, 34(4), 574-589.
 }

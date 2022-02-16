@@ -33,3 +33,6 @@ NULL
 #' @param rhs Function whose first argument is given by the left-hand-side argument \code{lhs} of the pipe operator.
 #'
 NULL
+
+## quiets concerns of R CMD check re: the .'s that appear in pipelines
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("."))

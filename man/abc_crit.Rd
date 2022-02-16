@@ -23,7 +23,7 @@ abc_crit(X, kmax, nbck = NULL, cmax = 3)
 The function estimates the number of static factors in the
 dynamic factor model. These information criteria are based on
 Alessi, Barigozzi and Capasso (2010). This function is a direct
-translation of the MATLAB code given in http://www.barigozzi.eu/Codes.html
+translation of the MATLAB code given in \url{http://www.barigozzi.eu/Codes.html}
 written by Matteo Barigozzi.
 }
 \examples{

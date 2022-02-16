@@ -20,9 +20,9 @@ prune_data(
 
 \item{int_vars}{vector of strings specifying the variables of interest, which are ordered first}
 
-\item{start_date}{\link{ymd} object specifying the start date of the sample}
+\item{start_date}{\link[lubridate]{ymd} object specifying the start date of the sample}
 
-\item{end_date}{\link{ymd} object specifying the end date of the sample}
+\item{end_date}{\link[lubridate]{ymd} object specifying the end date of the sample}
 
 \item{impute}{Are the outliers removed and replaced with an imputed value
 (for the imputation scheme see \link[fbi]{tw_apc})? Defaults to TRUE}
@@ -34,7 +34,7 @@ prune_data(
 \value{
 list of components
 \item{df}{A \eqn{T x N} data frame corresponding transformed data}
-\item{date}{vector of \link{ymd} components giving the sample span}
+\item{date}{vector of \link[lubridate]{ymd} components giving the sample span}
 \item{discarded}{A list of discarded variables containing missing values}
 \item{sd_mat}{If \code{sdize = TRUE}, a matrix containing standard deviations of the variables on the diagonal
 is also supplied}
@@ -50,3 +50,4 @@ with respect to
 \item{standardization.}
 }
 }
+\keyword{internal}

@@ -26,3 +26,4 @@ kfks_cpp(A, C, R, Q, data_wide, P1, dim_state, only_ll)
 \description{
 Kalman filter smoother
 }
+\keyword{internal}

@@ -2,48 +2,56 @@
 % Please edit documentation in R/intial_estimation.R
 \name{boot_init}
 \alias{boot_init}
-\title{Simulate a set of initial values and choose the one maximizing log-likelihood}
+\title{Obtain initial values to start the EM algorithm}
 \usage{
-boot_init(data, nu, degs = NULL, tmpl_mod, reg_prm = 7, nrep)
+boot_init(data, nu, degs = NULL, reg_prm = 6, nrep = 1, tmpl_mod = NULL)
 }
 \arguments{
-\item{data}{matrix of dimension \eqn{(T x N)}, where\eqn{T} is the number of observations and
+\item{data}{matrix of dimension \eqn{(T x N)}, where \eqn{T} is the number of observations and
 \eqn{N} is the number of variables}
 
 \item{nu}{a vector of Kronecker indices}
 
-\item{degs}{vector of length 2, where one can optionally specify the degrees of c(z) and d(z),
+\item{degs}{optional, vector of length 2, where one can specify the degrees of c(z) and d(z),
 either of the parameters must be equal to \code{max(nu)}}
 
 \item{reg_prm}{integer valued parameter allowing the user to directly estimate initial values from
 regularized data such that the std deviation of the randomly drawn noise vector of normally
 distributed values is \code{10^-reg_prm}}
+
+\item{nrep}{integer, \code{nrep=1} for no bootstrapping of initial values and \code{nrep>1}
+for \code{nrep} bootstraps of initial values}
+
+\item{tmpl_mod}{optional, supply the template as an input, using this speeds up the function,
+enabled for convenience of the function \code{\link{do_everything_rmfd}}}
 }
 \value{
 a list of elements
 \item{params0}{vector of initial values}
 \item{sigma}{estimate of initial error covariance matrix}
-\item{llval}{the log-likelihood value of the initial state space model}
+\item{llval}{the log-likelihood value of the initial state space model, returned only if \code{nrep>1}}
 }
 \description{
-\code{boot_init} simulates a set of initial values such that, for every draw,
-a "small" noise term is simulated and added to the observed data and subsequently
-the initial values are calculated using the regularized data.
-This is repeated for \eqn{K} times, where \eqn{K} denotes the number of simulations.
-For each state space model corresponding to the initial values, the log-likelihood
-value of the model is calculated. Finally, the function returns the set of initial values for which
-the log-likelihood value is maximized.
+\code{boot_init} implements the estimation scheme of the initial parameter
+values given in Appendix B of \emph{Estimation of Impulse-Response
+Functions with Dynamic Factor Models: A New Parametrization} available at
+\url{https://arxiv.org/pdf/2202.00310.pdf}.
 }
 \examples{
-# compare the difference in computing time with different regularization parameter values
+# compare the difference in computing time
+# w/ and w/o bootstrapping
+# scale data first
+Y <- scale(FRED_light$df)
 tmp <- Sys.time()
-arg_list <- list(data = FRED_light$df, nu = c(1,1,1,1), reg_prm = 5, nrep = 50)
-test_run <- do.call(boot_init, arg_list)
+arg_list <- list(data = Y, nu = c(1,1,1,1), reg_prm = NULL, nrep = 1)
+est0 <- do.call(boot_init, arg_list)
 time_elapsed <- Sys.time() - tmp
-arg_list$reg_prm <- 10
+arg_list$nrep <- 10
 tmp <- Sys.time()
-test_run <- do.call(boot_init, arg_list)
+est1 <- do.call(boot_init, arg_list)
 time_elapsed1 <- Sys.time() - tmp
+# the computation slows down roughly at a rate 1 sec/1 bootstrap round, and is
+# caused by the evaluation of the log-likelihood of the boostrapped models
 print(time_elapsed1 - time_elapsed)
 
 }

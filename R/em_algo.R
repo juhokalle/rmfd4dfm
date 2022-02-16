@@ -6,9 +6,9 @@
 #' @param params_deep_init initial system and idiosyncratic variance parameter values
 #' @param sigma_init initial value of the \eqn{dim_in x dim_in} innovation covariance matrix
 #' @param data_wide \eqn{n x T} matrix containing the data
-#' @param tmpl_ss \code{tmpl_rmfd_echelon_ss} object specifying the model to be estimated
-#' @param MAXIT maximum number of iterations
-#' @param VERBOSE print estimation progress
+#' @param tmpl_ss \code{tmpl_rmfd_echelon_ss} object specifying the model structure
+#' @param MAXIT integer denoting maximum number of iterations
+#' @param VERBOSE boolean, print estimation progress?
 #'
 #' @keywords internal
 update_em2 = function(params_deep_init, sigma_init,
@@ -25,7 +25,7 @@ update_em2 = function(params_deep_init, sigma_init,
                             Sigma = sigma_init,
                             data_wide = data_wide)
   ll_this <- out_e$loglik
-  if(!is.finite(ll_this)) stop("Initial estimation results in unstable system, the algorithm stops.")
+  if(!is.finite(ll_this)) stop("\nInitial estimation results in unstable system, the algorithm stops.")
 
   # Prepare while loop
   flag_converged = FALSE
@@ -43,7 +43,7 @@ update_em2 = function(params_deep_init, sigma_init,
                               data_wide = data_wide)
     # check convergence
     ll_new = out_e$loglik
-    if(!is.finite(ll_new)) stop(paste("Unstable system, estimation stopped at ", iter, ". iteration.", sep = ""))
+    if(!is.finite(ll_new)) stop("\nUnstable system, estimation stopped at ", iter, ". iteration.")
     delta_loglik = abs(ll_new - ll_this)
     avg_ll = 0.5*(abs(ll_new + ll_this) + 1e-6)
     diff_ll = delta_loglik / avg_ll
@@ -78,14 +78,18 @@ update_em2 = function(params_deep_init, sigma_init,
               conv_stat = conv_stat))
 }
 
-#' @title Obtaining Moment Matrices for EM Algorithm Using Kalman Filter/Smoother
+#' @title Obtain Moment Matrices for the EM Algorithm Using Kalman Filter/Smoother
 #'
 #' @description
-#' For details see section 3.2. and Appendix C in \emph{Estimation of Impulse-Response
+#' For details, see section 3.2. and Appendix C in \emph{Estimation of Impulse-Response
 #' Functions with Dynamic Factor Models: A New Parametrization}
 #' available at \url{https://arxiv.org/pdf/2202.00310.pdf}.
 #'
-#' @param stsp_mod \link{stspmod} object containing the state space model used for smoothing and the idiosyncratic noise component
+#' @seealso Watson, M. W., & Engle, R. F. (1983). Alternative algorithms for the
+#' estimation of dynamic factor, mimic and varying coefficient regression models.
+#' Journal of Econometrics, 23(3), 385-400.
+#'
+#' @param stsp_mod \code{stspmod} object containing the state space model used for smoothing and the idiosyncratic noise component
 #' @param Sigma Matrix of dimension \code{dim_in x dim_in}. All \code{dim_in^2} elements are saved, symmetry is not taken into account.
 #' @param data_wide Matrix of dimension \code{dim_out x n_obs}
 #' @param only_ll return only the log-likelihood value calculated using KF
@@ -192,6 +196,8 @@ smoothed_moments8 = function(stsp_mod, Sigma, data_wide, only_ll = FALSE){
 #' \item{model_new}{a state space model corresponding to the new estimated parameters}
 #' \item{params_new}{a vector of deep parameters}
 #'
+#' @keywords internal
+#'
 max_step <- function(out_smooth, tmpl_ss){
 
   dim_in <- out_smooth$dim_in
@@ -246,4 +252,3 @@ max_step <- function(out_smooth, tmpl_ss){
   return(list(model_new = model_new,
               params_new = params_new))
 }
-

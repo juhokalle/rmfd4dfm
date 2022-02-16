@@ -2,35 +2,64 @@
 % Please edit documentation in R/estimation_tools.R
 \name{DfmRawImp}
 \alias{DfmRawImp}
-\title{FGLR two-step method using VARs to estimate DFM}
+\title{Two-step estimation method of S-DFM using VAR}
 \usage{
 DfmRawImp(X, q, r, k, h)
 }
 \arguments{
-\item{X}{Tall data matrix}
+\item{X}{\eqn{T x n} data matrix, where \eqn{T} and \eqn{n}
+are the time series and cross-sectional dimensions, respectively}
 
-\item{q}{Number of dynamic factors,}
+\item{q}{The dynamic factor dimension}
 
 \item{r}{Number of static factors, must be larger than or equal to \eqn{q}}
 
-\item{k}{Number of lags in the VAR for static factors}
+\item{k}{The VAR order for static factors}
 
-\item{h}{number of lags included in the IRF}
+\item{h}{Estimate IRF \eqn{h}-period ahead}
 }
 \value{
-The function \code{DfmRawImp} returns the following components
-\item{var_model}{\code{\link{est_ar}} object corresponding to the VAR on \eqn{r} static factors}
-\item{KM}{\eqn{r x q} matrix corresponding to the matrix used for low rank approximation
-of the error term}
-\item{WW}{\eqn{N}-dimensional diagonal matrix containing the standard deviations of the variables}
-\item{W}{\eqn{N x r} factor loading matrix}
+\eqn{(n x q x h+1)}-dimensional array of impulse responses
 }
 \description{
-Calculate raw IRFs for S-DFM according to section 2.3.1 in
+\code{DfmRawImp} estimates non-structural IRFs for S-DFM according to section 2.3.1 in
 \emph{Estimation of Impulse-Response Functions with Dynamic Factor Models:
 A New Parametrization} available at \url{https://arxiv.org/pdf/2202.00310.pdf}.
 }
 \examples{
-X <- FRED_light$df
-test <- DfmRawImp(X = X, q = 4, r = 16, k = 2, h = 50)
+# Consider the following monetary policy example for illustration
+X <- FRED_heavy$df
+# positions of IP, CPI, FFR, and US/Swiss exchange rate in the data
+int_ix <- c(6, 105, 77, 95)
+# Estimate the static factor dimension r
+(PC_r <- baingcriterion(X, rmax = 25)$PC)
+(IC_r <- baingcriterion(X, rmax = 25)$IC)
+# As seen from this example, the criteria are not in consensus about the
+# static factor dimension and suggest also the maximum value as an
+# estimate for r dimension. Choose a grid of values of r to compare results:
+r <- c(4,8,16)
+# We fix dynamic factor dimension q to 4 and the VAR order k to 2
+est_irfs <- lapply(r, function(x) DfmRawImp(X = X, q = 4, r = x, k = 2, h = 50))
+# Recursive identification of the model
+for(j in 1:length(est_irfs)){
+  # extract the lag zero polynomial corresponding to the variables of interest
+  b0 <- unclass(est_irfs[[j]])[int_ix, , 1]
+  # cholesky decomposition of the residual covariance matrix
+  C <- b0 \%>\% tcrossprod() \%>\% chol() \%>\% t()
+  # recursive identification of the IRFs
+  chol_irf <- irf_x(est_irfs[[j]], post_mat = solve(b0)\%*\%C)
+  # normalize to 50bp shock to FFR on impact
+  chol_irf <- chol_irf/chol_irf[int_ix[3],3,1]*0.5
+  # cumulate IRFS for IP, inflation, and Exchange rate
+  chol_irf[int_ix[c(1,2,4)], ,] <- chol_irf[int_ix[c(1,2,4)], ,] \%>\%
+    apply(MARGIN = c(1,2), FUN = cumsum) \%>\%
+    aperm(perm = c(2,3,1))
+  # produce IRF figures
+  est_irfs[[j]] <- plot_irfs(t(chol_irf[int_ix, 3,]),
+  c("Ind_prod", "Inflation", "FF_rate", "ExRate"))
+}
+# plot the IRFs into a single figure
+\dontrun{
+gridExtra::marrangeGrob(c(est_irfs[[1]], est_irfs[[2]], est_irfs[[3]]),
+                        ncol = 3, nrow = 4)}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/em_algo.R
 \name{update_em2}
 \alias{update_em2}
-\title{Estimation of RMFD model using EM algorithm}
+\title{Estimation of the D-DFM model using the EM algorithm}
 \usage{
 update_em2(
   params_deep_init,
@@ -21,16 +21,14 @@ update_em2(
 
 \item{data_wide}{\eqn{n x T} matrix containing the data}
 
-\item{tmpl_ss}{\link{tmpl_rmfd_echelon_ss} object specifying the model to be estimated}
+\item{tmpl_ss}{\code{tmpl_rmfd_echelon_ss} object specifying the model structure}
 
-\item{MAXIT}{maximum number of iterations}
+\item{MAXIT}{integer denoting maximum number of iterations}
 
-\item{VERBOSE}{print estimation progress}
-}
-\value{
-State space system corresponding final model
+\item{VERBOSE}{boolean, print estimation progress?}
 }
 \description{
 This function carries out the EM estimation of RMFD model by iterating between
-E and M step (\link[rmfd]{smoothed_moments8} and \link[rmfd]{max_step}, resp.) until convergence.
+E and M step (\code{smoothed_moments8} and \code{max_step}, resp.) until convergence
 }
+\keyword{internal}
