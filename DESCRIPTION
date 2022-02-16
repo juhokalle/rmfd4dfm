@@ -17,7 +17,7 @@ Description: This package contains the necessary functions and data for a
     Wolfgang Scherrer. Since these packages may change and to ensure the
     functioning of the package, we put the necessary functions from the
     current versions of these packages into R scripts zz_ratmat.R and
-    zz_RLDM.R.  References: [1] Koistinen, J., and Funovits, B. (2022).
+    zz_RLDM.R. References: [1] Koistinen, J., and Funovits, B. (2022).
     Estimation of Impulse-Response Functions with Dynamic Factor Models: A
     New Parametrization.  arXiv preprint arXiv:2202.00310, available at
     https://arxiv.org/pdf/2202.00310.pdf.  [2] Forni, M., Giannone, D.,
@@ -33,9 +33,12 @@ Imports:
     ggplot2,
     magrittr,
     purrr,
+    QZ,
     Rcpp,
+    stats,
     RcppArmadillo,
-    tibble
+    tibble,
+    utils
 Suggests:
     fbi (>= 0.6.0),
     gridExtra,
@@ -47,5 +50,5 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Remotes:  
+Remotes: 
     cykbennie/fbi
