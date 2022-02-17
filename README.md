@@ -1,32 +1,46 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# rmfd4dfm
+# Estimation of Impulse-Response Functions with Dynamic Factor Models: A New Parametrization
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of rmfd4dfm is to …
+This repository contains the associated R-package and data to the paper
+[Estimation of Impulse-Response Functions with Dynamic Factor Models: A
+New Parametrization](https://arxiv.org/pdf/2202.00310) by Juho Koistinen
+and Bernd Funovits (2022). Specifically, the functions within the
+package allow the user to estimate the structural DFM model with the
+common component parametrized as the right matrix fraction description
+in echelon form (RMFD-E) introduced in [Section
+2.2](https://arxiv.org/pdf/2202.00310.pdf#subsection.2.2) of the
+associated paper. This document also shows how to replicate the
+empirical exercise of [Section
+5](https://arxiv.org/pdf/2202.00310.pdf#section.5).
+
+The package builds on the R-packages **rationalmatrices** and **RLDM**,
+authored by Bernd Funovits and Wolfgang Scherrer. Since these packages
+might change, the parts which are necessary for the analysis in the
+associated article are extracted to R files **\~/rmfd4dfm/R/zz_ratmat**
+and **\~/svarmawhf/R/zz_rldm**. Importantly, please reference the
+**rationalmatrices** and the **RLDM** packages should you use their
+functionalities and not this package.
 
 ## Installation
 
-You can install the released version of rmfd4dfm from
-[CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("rmfd4dfm")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+The package can be installed using the following command as is the
+standard with packages hosted by GitHub
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("juhokalle/rmfd4dfm")
 ```
 
-## Example
+## Data
 
-This is a basic example which shows you how to solve a common problem:
+## Replication: Monetary policy example
+
+The idea is to apply high-dimensional data
 
 ``` r
 library(rmfd4dfm)
@@ -56,6 +70,3 @@ example workflow can be found here:
 You can also embed plots, for example:
 
 <img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
