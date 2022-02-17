@@ -1,16 +1,17 @@
 #' @title Estimation of Impulse-Response Functions with Dynamic Factor Models: A New Parametrization
 #'
+#' @description
 #' This is the associated R-package to the paper with the above title available at
 #' \url{https://arxiv.org/pdf/2202.00310.pdf}.
 #'
-#' @section Abstract:
+#' Abstract:
 #'
 #' We propose a new parametrization for the estimation and identification
 #' of the impulse-response functions (IRFs) of dynamic factor models
 #' (DFMs). The theoretical contribution of this paper concerns the problem
 #' of observational equivalence between different IRFs, which implies
 #' non-identification of the IRF parameters without further restrictions.
-#' We show how the minimal identification conditions proposed by \citet{baiwang15}
+#' We show how the minimal identification conditions proposed by Bai and Wang (2015)
 #' are nested in the proposed framework and can be further augmented
 #' with overidentifying restrictions leading to efficiency gains. The
 #' current standard practice for the IRF estimation of DFMs is based
@@ -23,7 +24,13 @@
 #' shock. We estimate a strong reaction of the macroeconomic variables,
 #' while the benchmark models appear to give qualitatively counterintuitive
 #' results. The estimation methods are implemented in the accompanying
-#' \texttt{R} package.
+#' R package.
+#'
+#' @references Bai, J., & Wang, P. (2015). Identification and Bayesian estimation
+#' of dynamic factor models. Journal of Business & Economic Statistics, 33(2), 221-240.
+#'
+#' Koistinen, J., & Funovits, B. (2022). Estimation of Impulse-Response Functions with
+#' Dynamic Factor Models: A New Parametrization. arXiv preprint arXiv:2202.00310.
 #'
 #' @section Dependencies:
 #'
@@ -45,7 +52,6 @@
 #' @name rmfd4dfm
 #' @importFrom magrittr %>%
 #' @importFrom corpcor pseudoinverse
-#'
 #' @useDynLib rmfd4dfm, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 NULL

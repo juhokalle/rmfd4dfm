@@ -266,10 +266,10 @@ do_everything_fglr <- function(df, r, k, h, nrep = 500, ci = 0.8){
 #' with name "shock_ix" with the position of the shock of interest as the first element and the
 #' normalization constant as the second element.
 #'
-#' @seealso McCracken, M. W., & Ng, S. (2016). FRED-MD: A monthly database for macroeconomic research.
+#' @references McCracken, M. W., & Ng, S. (2016). FRED-MD: A monthly database for macroeconomic research.
 #' Journal of Business & Economic Statistics, 34(4), 574-589.
 #'
-#' @return
+#' @return An \eqn{(h+1 x 3 x q)} array corresponding to the structurally identified IRFs
 #'
 #' @examples
 #' # example from the paper: the data object is similar to the
@@ -283,10 +283,11 @@ do_everything_svar <- function(df, k, nrep = 500, h = 50, ci = 0.68){
   irf_arr <- array(0, dim = c(q, q, h+1, nrep))
   # obtain first the bootstrap sample and subsequently the point estimates
   for(j in 1:nrep){
-    var_boot <- est_ar_ols(y = X_boot(df$df[,df$int_ix], 52),
-                           p.max = k,
-                           p.min = k,
-                           mean_estimate = 'intercept')
+    var_boot <- est_ar(obj = X_boot(df$df[,df$int_ix], 52),
+                       p.max = k,
+                       method = "ols",
+                       ic = "max",
+                       mean_estimate = 'intercept')
     irf_arr[, , ,j] <- var_boot$model$sys %>%
       pseries(lag.max = h) %>%
       unclass() %>%
@@ -300,10 +301,11 @@ do_everything_svar <- function(df, k, nrep = 500, h = 50, ci = 0.68){
                                                                       int_vars = 1:q),
                      simplify = "array") %>% aperm(c(1,3,2))
   # add point estimates to the IRF array
-  var_point <- est_ar_ols(y = df$df[,df$int_ix],
-                          p.max = k,
-                          p.min = k,
-                          mean_estimate = 'intercept')
+  var_point <- est_ar(obj = df$df[,df$int_ix],
+                      p.max = k,
+                      method = "ols",
+                      ic = "max",
+                      mean_estimate = 'intercept')
   svar_irf[,2,] <- var_point$model$sys %>%
     pseries(lag.max = h) %>%
     unclass() %>%

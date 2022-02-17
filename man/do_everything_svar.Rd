@@ -30,7 +30,7 @@ with name "shock_ix" with the position of the shock of interest as the first ele
 normalization constant as the second element.}
 }
 \value{
-
+An \eqn{(h+1 x 3 x q)} array corresponding to the structurally identified IRFs
 }
 \description{
 Similarly to other \code{do_everything_*} functions, \code{do_everything_svar}
@@ -46,7 +46,7 @@ SVAR are indexed with a vector (see below).
 FRED_light$int_ix <- c(6, 105, 77, 95)
 est_obj <- do_everything_svar(FRED_light, k = 9, nrep = 500, h = 50, ci = .68)
 }
-\seealso{
+\references{
 McCracken, M. W., & Ng, S. (2016). FRED-MD: A monthly database for macroeconomic research.
 Journal of Business & Economic Statistics, 34(4), 574-589.
 }

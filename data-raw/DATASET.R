@@ -1,6 +1,6 @@
-pkgs <- c("tidyverse", "lubridate", "xts", "fbi")
+# For this script to work properly the following libraries must be loaded
+pkgs <- c("lubridate", "fbi")
 void <- lapply(pkgs, library, character.only = TRUE)
-
 path = "data-raw/"
 pap = pap_factory(path)
 
@@ -17,7 +17,7 @@ tmp = di %>% rbind(c(5,5,5,5,5,5,5,5,5,5,    # This is an alternative
                      4,4,4,4,4,4,4,5,5,5,    # It is more close
                      5,5,2,5,5,5,5,5,7,5,    # to the differencing
                      5,5,2,5,5,1,5,1,1,1,    # strategy employed by Forni
-                     1,1,1,1,1,1,1,1,1,1,    # and Gambetti (JME,2010)
+                     1,1,1,1,1,1,1,1,1,1,    # and Gambetti (JME, 2010)
                      1,1,1,1,1,4,4,4,4,5,    # such that many more
                      5,5,5,5,5,5,5,5,5,5,    # variables are left in
                      5,5,5,5,5,5,5,5,5,5,    # levels compared to
@@ -69,38 +69,37 @@ dd = data_m %>%
                                               value_trafo = .x(.y$value)))) %>%
   dplyr::select(-data)
 
-# Prepare and save data with heavy transformations
+# Prepare the data sets
 FRED_heavy <- dd %>%
   dplyr::select(variable, fct_data) %>%
   unnest(fct_data) %>%
   pivot_wider(id_cols = "date", names_from = "variable", values_from = "value_trafo")
-
-FRED_heavy <- prune_data(df = FRED_heavy,
+FRED_heavy <- rmfd4dfm:::prune_data(df = FRED_heavy,
                          start_date = ymd(19730401),
                          end_date = ymd(20071101),
                          impute = TRUE,
                          sdize = FALSE,
                          trans_ix = dd$transform)
 
-usethis::use_data(FRED_heavy, overwrite = TRUE)
-
-# Prepare and save data with light transformations
 FRED_light <- dd %>%
   dplyr::select(variable, fct_data1) %>%
   unnest(fct_data1) %>%
   pivot_wider(id_cols = "date", names_from = "variable", values_from = "value_trafo")
+FRED_light <- rmfd4dfm:::prune_data(df = FRED_light,
+                                    start_date = ymd(19730401),
+                                    end_date = ymd(20071101),
+                                    impute = TRUE,
+                                    sdize = FALSE,
+                                    trans_ix = dd$transform1)
 
-FRED_light <- prune_data(df = FRED_light,
-                         start_date = ymd(19730401),
-                         end_date = ymd(20071101),
-                         impute = TRUE,
-                         sdize = FALSE,
-                         trans_ix = dd$transform1)
-usethis::use_data(FRED_light, overwrite = TRUE)
-
-# Prepare and save Forni and Gambetti (2010) data
 FG_data <- list(df = readRDS(pap("dataGF.rds")))
 FG_data$date <- seq(ymd(19730401), ymd(20071101), by = "month")
 FG_data$trans_ix <- as.vector(readRDS(pap("transGF.rds")))
-usethis::use_data(FG_data, overwrite = TRUE)
 
+# Save the data into folder "data" to be accessed when loading the package
+path = "data/"
+pap = pap_factory(path)
+
+saveRDS(FRED_heavy, file = pap("FRED_heavy.rds"))
+saveRDS(FRED_light, file = pap("FRED_light.rds"))
+saveRDS(FG_data, file = pap("FG_data.rds"))

@@ -25,19 +25,23 @@ are the time series and cross-sectional dimensions, respectively}
 \code{DfmRawImp} estimates non-structural IRFs for S-DFM according to section 2.3.1 in
 \emph{Estimation of Impulse-Response Functions with Dynamic Factor Models:
 A New Parametrization} available at \url{https://arxiv.org/pdf/2202.00310.pdf}.
+The code used here follows closely to that of given in the supplementary
+material to the Forni and Gambetti (2010), available at
+\url{http://pareto.uab.es/lgambetti/ReplicaForniGambettiJME.zip}.
 }
 \examples{
 # Consider the following monetary policy example for illustration
-X <- FRED_heavy$df
+# taken from Forni and Gambetti (2010)
+X <- FG_data$df
 # positions of IP, CPI, FFR, and US/Swiss exchange rate in the data
-int_ix <- c(6, 105, 77, 95)
+int_ix <- c(5, 96, 75, 106)
 # Estimate the static factor dimension r
 (PC_r <- baingcriterion(X, rmax = 25)$PC)
 (IC_r <- baingcriterion(X, rmax = 25)$IC)
 # As seen from this example, the criteria are not in consensus about the
 # static factor dimension and suggest also the maximum value as an
 # estimate for r dimension. Choose a grid of values of r to compare results:
-r <- c(4,8,16)
+r <- c(4,10,16)
 # We fix dynamic factor dimension q to 4 and the VAR order k to 2
 est_irfs <- lapply(r, function(x) DfmRawImp(X = X, q = 4, r = x, k = 2, h = 50))
 # Recursive identification of the model
@@ -50,16 +54,21 @@ for(j in 1:length(est_irfs)){
   chol_irf <- irf_x(est_irfs[[j]], post_mat = solve(b0)\%*\%C)
   # normalize to 50bp shock to FFR on impact
   chol_irf <- chol_irf/chol_irf[int_ix[3],3,1]*0.5
-  # cumulate IRFS for IP, inflation, and Exchange rate
-  chol_irf[int_ix[c(1,2,4)], ,] <- chol_irf[int_ix[c(1,2,4)], ,] \%>\%
+  # cumulate IRFS for IP and inflation
+  chol_irf[int_ix[c(1,2)], ,] <- chol_irf[int_ix[c(1,2)], ,] \%>\%
     apply(MARGIN = c(1,2), FUN = cumsum) \%>\%
     aperm(perm = c(2,3,1))
   # produce IRF figures
   est_irfs[[j]] <- plot_irfs(t(chol_irf[int_ix, 3,]),
-  c("Ind_prod", "Inflation", "FF_rate", "ExRate"))
+  c("Ind_prod", "Inflation", "FF_rate", "ExRate"),
+  plot_title = paste("DFM with ", r[j], " static factors", sep=""))
 }
 # plot the IRFs into a single figure
 \dontrun{
 gridExtra::marrangeGrob(c(est_irfs[[1]], est_irfs[[2]], est_irfs[[3]]),
-                        ncol = 3, nrow = 4)}
+                        ncol = 3, nrow = 4, top = NULL)}
+}
+\seealso{
+Forni, M., & Gambetti, L. (2010). The dynamic effects of monetary policy:
+A structural factor model approach. Journal of Monetary Economics, 57(2), 203-216.
 }

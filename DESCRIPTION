@@ -2,10 +2,18 @@ Package: rmfd4dfm
 Title: Estimation of DFMs using RMFD-E parametrization
 Version: 0.1.0
 Authors@R: 
-    person(given = "Juho",
-           family = "Koistinen",
-           role = c("aut", "cre"),
-           email = "juho.koistinen@helsinki.fi")
+    c(person(given = "Juho",
+             family = "Koistinen",
+             role = c("aut", "cre"),
+             email = "juho.koistinen@helsinki.fi"),
+      person(given = "Bernd",
+             family = "Funovits",
+             role = c("aut"),
+             email = "bernd.funovits@gmail.com"),
+      person(given = "Wolfgang",
+             family = "Scherrer",
+             role = c("aut"),
+             email = "wolfgang.scherrer@tuwien.ac.at"))
 Description: This package contains functions for estimating dynamic factor models (DFMs) using right matrix fraction description in echelon form (RMFD-E) parametrization for the common component of DFMs.
 License: MIT + file LICENSE
 Depends: 

@@ -16,7 +16,7 @@ bootstrapped data matrix of the same dimensions as the original one
 }
 \description{
 \code{X_boot} performs a simple block bootstrap for the data matrix.
-This is a direct copy of FG code used in Forni and Gambetti (2010)
-available at \url{https://ars.els-cdn.com/content/image/1-s2.0-S0304393209001597-mmc1.zip}.
+This is a direct copy of the code used in Forni and Gambetti (2010)
+available at \url{http://pareto.uab.es/lgambetti/ReplicaForniGambettiJME.zip}.
 }
 \keyword{internal}

@@ -21,7 +21,6 @@ do_everything_rmfd(
 \enumerate{
 \item \code{df}, data in a \eqn{T x n} matrix;
 \item \code{int_ix}, an index vector coding the columns corresponding to the variables of interest in the data;
-\item \code{shock_ix}, and index vector of length 2,
 \item \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016)
 }}
 
