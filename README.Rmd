@@ -33,16 +33,21 @@ Since these packages might change, the parts which are necessary for the analysi
 ## Installation
 
 The package can be installed using the following command as is the standard with
-packages hosted by GitHub
+packages hosted by GitHub.
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("juhokalle/rmfd4dfm")
 ```
-## The argument in the paper
 
-Here I will provide a brief and informal introduction to the argument made in the paper 
-as to why the methodology introduced in the paper  
+## The Model
+
+Here I will provide a brief and hopefully accessible introduction to the modelling approach presented in the paper.
+The aim is to identify and estimate impulse-response functions (IRFs) using dynamic factor models (DFMs). The model is given as 
+\begin{equation}
+x_{t} & =d_{0}z_{t}^{*}+d_{1}z_{t-1}^{*}+\cdots+d_{s}z_{t-s}^{*}+\xi_{t}
+\end{equation}
+
 
 ## Data
 
@@ -52,4 +57,5 @@ as to why the methodology introduced in the paper
 * The idea of the empirical example
 * The functions used in the exercise
 * Obtaining the results
+
 

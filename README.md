@@ -31,17 +31,19 @@ functionalities and not this package.
 ## Installation
 
 The package can be installed using the following command as is the
-standard with packages hosted by GitHub
+standard with packages hosted by GitHub.
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("juhokalle/rmfd4dfm")
 ```
 
-## The argument in the paper
+## The Model
 
-Here I will provide a brief and informal introduction to the argument
-made in the paper as to why the methodology introduced in the paper
+Here I will provide a brief and hopefully accessible introduction to the
+modelling approach presented in the paper. The aim is to identify and
+estimate impulse-response functions (IRFs) using dynamic factor models
+(DFMs). The model is given as
 
 ## Data
 
