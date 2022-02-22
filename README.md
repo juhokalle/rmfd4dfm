@@ -10,9 +10,9 @@ New Parametrization](https://arxiv.org/pdf/2202.00310) authored by Juho
 Koistinen and [Bernd
 Funovits](https://sites.google.com/site/berndfunovits/) (2022).
 Specifically, the functions within the package allow the user to
-estimate the structural dynamic factor model, where with the common
-component parametrized as the right matrix fraction description in
-echelon form (RMFD-E), which is introduced in [Section
+estimate a structural dynamic factor model (DFM), with the common
+component parametrized as a right matrix fraction description in echelon
+form (RMFD-E), which is introduced in [Section
 2.2](https://arxiv.org/pdf/2202.00310.pdf#subsection.2.2) of the
 associated paper. This document also shows how to replicate the
 empirical exercise of [Section
@@ -46,13 +46,21 @@ with the emphasis placed on macroeconomic applications and and analysis.
 The model of interest is given as
 
 ![
-x\_{t} =d\_{0}z\_{t}^{\*}+d\_{1}z\_{t-1}^{\*}+\\cdots+d\_{s}z\_{t-s}^{\*}+\\xi\_{t}\\\\
-z\_{t}^{\*} =c\_{1}z\_{t-1}^{\*}+\\cdots+c\_{p}z\_{t-p}^{\*}+\\varepsilon\_{t}, \\\\
-\\varepsilon\_{t}=Hu\_{t},
-](https://latex.codecogs.com/png.latex?%0Ax_%7Bt%7D%20%3Dd_%7B0%7Dz_%7Bt%7D%5E%7B%2A%7D%2Bd_%7B1%7Dz_%7Bt-1%7D%5E%7B%2A%7D%2B%5Ccdots%2Bd_%7Bs%7Dz_%7Bt-s%7D%5E%7B%2A%7D%2B%5Cxi_%7Bt%7D%5C%5C%0Az_%7Bt%7D%5E%7B%2A%7D%20%3Dc_%7B1%7Dz_%7Bt-1%7D%5E%7B%2A%7D%2B%5Ccdots%2Bc_%7Bp%7Dz_%7Bt-p%7D%5E%7B%2A%7D%2B%5Cvarepsilon_%7Bt%7D%2C%20%5C%5C%0A%5Cvarepsilon_%7Bt%7D%3DHu_%7Bt%7D%2C%0A "
-x_{t} =d_{0}z_{t}^{*}+d_{1}z_{t-1}^{*}+\cdots+d_{s}z_{t-s}^{*}+\xi_{t}\\
-z_{t}^{*} =c_{1}z_{t-1}^{*}+\cdots+c_{p}z_{t-p}^{*}+\varepsilon_{t}, \\
-\varepsilon_{t}=Hu_{t},
+x\_{t} =d\_{0}z\_{t}^{\*}+d\_{1}z\_{t-1}^{\*}+\\cdots+d\_{s}z\_{t-s}^{\*}+\\xi\_{t} \\tag{1}
+](https://latex.codecogs.com/png.latex?%0Ax_%7Bt%7D%20%3Dd_%7B0%7Dz_%7Bt%7D%5E%7B%2A%7D%2Bd_%7B1%7Dz_%7Bt-1%7D%5E%7B%2A%7D%2B%5Ccdots%2Bd_%7Bs%7Dz_%7Bt-s%7D%5E%7B%2A%7D%2B%5Cxi_%7Bt%7D%20%5Ctag%7B1%7D%0A "
+x_{t} =d_{0}z_{t}^{*}+d_{1}z_{t-1}^{*}+\cdots+d_{s}z_{t-s}^{*}+\xi_{t} \tag{1}
+")
+
+![
+z\_{t}^{\*} =c\_{1}z\_{t-1}^{\*}+\\cdots+c\_{p}z\_{t-p}^{\*}+\\varepsilon\_{t} \\tag{2}
+](https://latex.codecogs.com/png.latex?%0Az_%7Bt%7D%5E%7B%2A%7D%20%3Dc_%7B1%7Dz_%7Bt-1%7D%5E%7B%2A%7D%2B%5Ccdots%2Bc_%7Bp%7Dz_%7Bt-p%7D%5E%7B%2A%7D%2B%5Cvarepsilon_%7Bt%7D%20%5Ctag%7B2%7D%0A "
+z_{t}^{*} =c_{1}z_{t-1}^{*}+\cdots+c_{p}z_{t-p}^{*}+\varepsilon_{t} \tag{2}
+")
+
+![
+\\varepsilon\_{t}=Hu\_{t} \\tag{3}
+](https://latex.codecogs.com/png.latex?%0A%5Cvarepsilon_%7Bt%7D%3DHu_%7Bt%7D%20%5Ctag%7B3%7D%0A "
+\varepsilon_{t}=Hu_{t} \tag{3}
 ")
 
 where
@@ -61,26 +69,22 @@ where
     ![n](https://latex.codecogs.com/png.latex?n "n")-dimensional
     observed time series, with usually
     ![n>100](https://latex.codecogs.com/png.latex?n%3E100 "n>100").
-
 -   ![z_t^\*](https://latex.codecogs.com/png.latex?z_t%5E%2A "z_t^*") is
     a ![q](https://latex.codecogs.com/png.latex?q "q")-dimensional
     dynamic factor process, with usually
     ![q\<10](https://latex.codecogs.com/png.latex?q%3C10 "q<10").
-
--   ![xi_t](https://latex.codecogs.com/png.latex?xi_t "xi_t") is an
+-   ![x_t](https://latex.codecogs.com/png.latex?x_t "x_t") is an
     ![n](https://latex.codecogs.com/png.latex?n "n")-dimensional
     idiosyncratic term, we assume
     ![\\mathbb E(\\xi_t \\xi_t')=\\sigma\_\\xi^2I_n](https://latex.codecogs.com/png.latex?%5Cmathbb%20E%28%5Cxi_t%20%5Cxi_t%27%29%3D%5Csigma_%5Cxi%5E2I_n "\mathbb E(\xi_t \xi_t')=\sigma_\xi^2I_n").
-
 -   ![\\varepsilon_t](https://latex.codecogs.com/png.latex?%5Cvarepsilon_t "\varepsilon_t")
     is the innovation to
     ![z_t^\*](https://latex.codecogs.com/png.latex?z_t%5E%2A "z_t^*"),
     with
     ![\\mathbb E(\\varepsilon_t \\varepsilon_t')=\\Sigma\_\\varepsilon](https://latex.codecogs.com/png.latex?%5Cmathbb%20E%28%5Cvarepsilon_t%20%5Cvarepsilon_t%27%29%3D%5CSigma_%5Cvarepsilon "\mathbb E(\varepsilon_t \varepsilon_t')=\Sigma_\varepsilon").
-
 -   ![d_i](https://latex.codecogs.com/png.latex?d_i "d_i") and
     ![c_j](https://latex.codecogs.com/png.latex?c_j "c_j"),
-    ![i=0,\\ldots,s](https://latex.codecogs.com/png.latex?i%3D0%2C%5Cldots%2Cs "i=0,\ldots,s")
+    ![i=0,\\ldots,s](https://latex.codecogs.com/png.latex?i%3D0%2C%5Cldots%2Cs "i=0,\ldots,s"),
     ![j=1,\\ldots,p](https://latex.codecogs.com/png.latex?j%3D1%2C%5Cldots%2Cp "j=1,\ldots,p"),
     are
     ![n \\times q](https://latex.codecogs.com/png.latex?n%20%5Ctimes%20q "n \times q")
@@ -88,12 +92,10 @@ where
     ![q \\times q](https://latex.codecogs.com/png.latex?q%20%5Ctimes%20q "q \times q")
     parameter matrices, values of which are at the center of interest as
     the IRFs are constructed from these matrices.
-
 -   ![u_t](https://latex.codecogs.com/png.latex?u_t "u_t") is the
     ![q](https://latex.codecogs.com/png.latex?q "q")-dimensional
     structural shock process, with
     ![\\mathbb E (u_t u_t') = I_q](https://latex.codecogs.com/png.latex?%5Cmathbb%20E%20%28u_t%20u_t%27%29%20%3D%20I_q "\mathbb E (u_t u_t') = I_q").
-
 -   ![H](https://latex.codecogs.com/png.latex?H "H") is
     ![(q\\times q)](https://latex.codecogs.com/png.latex?%28q%5Ctimes%20q%29 "(q\times q)")-dimensional
     structural shock impact matrix, which we identify as
@@ -106,12 +108,14 @@ where
     ![H](https://latex.codecogs.com/png.latex?H "H") is valid as in the
     structural vector autoregression (SVAR) analysis.
 
-We can write the dynamic factor process compactly as
+We can write Eq. (2) compactly as
 ![z_t^\*=c(L)^{-1}\\varepsilon_t](https://latex.codecogs.com/png.latex?z_t%5E%2A%3Dc%28L%29%5E%7B-1%7D%5Cvarepsilon_t "z_t^*=c(L)^{-1}\varepsilon_t")
-and substitute this and the equation for the innovations
-![\\varepsilon_t](https://latex.codecogs.com/png.latex?%5Cvarepsilon_t "\varepsilon_t")
-into the equation for the observations to get
-![x_t=d(L)c(L)^{-1}H u_t + \\xi_t](https://latex.codecogs.com/png.latex?x_t%3Dd%28L%29c%28L%29%5E%7B-1%7DH%20u_t%20%2B%20%5Cxi_t "x_t=d(L)c(L)^{-1}H u_t + \xi_t").
+and substitute this and Eq. (3) into Eq (1) to get
+![x_t=d(L)c(L)^{-1}H u_t + \\xi_t](https://latex.codecogs.com/png.latex?x_t%3Dd%28L%29c%28L%29%5E%7B-1%7DH%20u_t%20%2B%20%5Cxi_t "x_t=d(L)c(L)^{-1}H u_t + \xi_t"),
+where
+![c(L)=I_q-c_1 L - \\cdots - c_p L^p](https://latex.codecogs.com/png.latex?c%28L%29%3DI_q-c_1%20L%20-%20%5Ccdots%20-%20c_p%20L%5Ep "c(L)=I_q-c_1 L - \cdots - c_p L^p")
+and
+![d(L)=d_0 + d_1 L + \\cdots + d_sL^s](https://latex.codecogs.com/png.latex?d%28L%29%3Dd_0%20%2B%20d_1%20L%20%2B%20%5Ccdots%20%2B%20d_sL%5Es "d(L)=d_0 + d_1 L + \cdots + d_sL^s").
 If we assume that the idiosyncratic component accounts for measurements
 errors or sectoral dynamics that pertain to a small number of variables,
 we can use the structural IRF
@@ -135,10 +139,12 @@ The problem is that the researcher cannot distinguish between
 ![d(L)c(L)^{-1}](https://latex.codecogs.com/png.latex?d%28L%29c%28L%29%5E%7B-1%7D "d(L)c(L)^{-1}")
 and
 ![\\bar d(L) \\bar c(L)^{-1}](https://latex.codecogs.com/png.latex?%5Cbar%20d%28L%29%20%5Cbar%20c%28L%29%5E%7B-1%7D "\bar d(L) \bar c(L)^{-1}")
-from the first and second moments of the data, and therefore conclusions
-drawn from the structural IRF
+from the first and second moments of the data, and therefore attempts at
+drawing conclusions from the structural IRF
 ![k(z)H](https://latex.codecogs.com/png.latex?k%28z%29H "k(z)H") are
-meaningless.
+futile without further assumptions on
+![c(L)](https://latex.codecogs.com/png.latex?c%28L%29 "c(L)") and
+![d(L)](https://latex.codecogs.com/png.latex?d%28L%29 "d(L)").
 
 Our insight is that
 ![k(L)](https://latex.codecogs.com/png.latex?k%28L%29 "k(L)") can be
@@ -147,7 +153,10 @@ identified, that is, the set of matrices
 narrowed down to ![I_q](https://latex.codecogs.com/png.latex?I_q "I_q"),
 using the identification restrictions that are standard in the
 literature dealing with the identification of the vector autoregressive
-moving average (VARMA) models. In this model class, the IRF is given as
+moving average (VARMA) models (for a recent summary, see [Deistler and
+Scherrer,
+2019](https://www2.cirano.qc.ca/~dufourj/Web_Site/Vinod_Rao_2019_Bk_Elsevier_ConceptualEtxUsingR.pdf#page=162)).
+In this model class, the IRF is given as
 ![k(L)=a(L)^{-1}b(L)](https://latex.codecogs.com/png.latex?k%28L%29%3Da%28L%29%5E%7B-1%7Db%28L%29 "k(L)=a(L)^{-1}b(L)")
 for some AR and MA lag polynomials
 ![a(L)](https://latex.codecogs.com/png.latex?a%28L%29 "a(L)") and
@@ -185,20 +194,23 @@ stack the dynamic factors into a
 ![r=q(s+1)](https://latex.codecogs.com/png.latex?r%3Dq%28s%2B1%29 "r=q(s+1)")-dimensional
 vector
 ![z_t = \\left(z_t^{\*'}, z\_{t-1}^{\*'}, \\cdots, z\_{t-s}^{\*'} \\right)'](https://latex.codecogs.com/png.latex?z_t%20%3D%20%5Cleft%28z_t%5E%7B%2A%27%7D%2C%20z_%7Bt-1%7D%5E%7B%2A%27%7D%2C%20%5Ccdots%2C%20z_%7Bt-s%7D%5E%7B%2A%27%7D%20%5Cright%29%27 "z_t = \left(z_t^{*'}, z_{t-1}^{*'}, \cdots, z_{t-s}^{*'} \right)'"),
-and write the equation for
-![x_t](https://latex.codecogs.com/png.latex?x_t "x_t") as
+and write Eq. (1) as
 ![x_t=Dz_t + \\xi_t](https://latex.codecogs.com/png.latex?x_t%3DDz_t%20%2B%20%5Cxi_t "x_t=Dz_t + \xi_t"),
 where
 ![D=\\left(d_0,\\cdots,d_s\\right)](https://latex.codecogs.com/png.latex?D%3D%5Cleft%28d_0%2C%5Ccdots%2Cd_s%5Cright%29 "D=\left(d_0,\cdots,d_s\right)"),
 which makes the model amenable to the principal components (PC) methods.
 In the second step, the static factor process is modelled as a VAR
-process, A(L)z_t = B\_t, where
-![A(L)](https://latex.codecogs.com/png.latex?A%28L%29 "A(L)") is an
+process,
+![A(L)z_t = B\\varepsilon_t](https://latex.codecogs.com/png.latex?A%28L%29z_t%20%3D%20B%5Cvarepsilon_t "A(L)z_t = B\varepsilon_t"),
+where ![A(L)](https://latex.codecogs.com/png.latex?A%28L%29 "A(L)") is
+an
 ![r \\times r](https://latex.codecogs.com/png.latex?r%20%5Ctimes%20r "r \times r")
 lag polynomial, and ![B](https://latex.codecogs.com/png.latex?B "B") is
 an
 ![r\\times q](https://latex.codecogs.com/png.latex?r%5Ctimes%20q "r\times q")
-constant matrix. After the estimation of D and A(L), the IRF
+constant matrix. After the estimation of
+![D](https://latex.codecogs.com/png.latex?D "D") and
+![A(L)](https://latex.codecogs.com/png.latex?A%28L%29 "A(L)"), the IRF
 ![k(L)=DA(L)^{-1}B](https://latex.codecogs.com/png.latex?k%28L%29%3DDA%28L%29%5E%7B-1%7DB "k(L)=DA(L)^{-1}B")
 can be constructed straightforwardly.
 
@@ -209,21 +221,53 @@ note that whenever
 number of parameter restrictions needed is
 ![r=q(s+1)](https://latex.codecogs.com/png.latex?r%3Dq%28s%2B1%29 "r=q(s+1)"),
 which is higher than that of needed in our parametrization,
-i.e. ![q](https://latex.codecogs.com/png.latex?q "q"). Second, we note
-that the reliable estimation of VAR on
+i.e. ![q](https://latex.codecogs.com/png.latex?q "q") [(Bai and Wang,
+2012)](https://mpra.ub.uni-muenchen.de/38434/2/MPRA_paper_38434.pdf).
+Second, we note that the reliable estimation of VAR on
 ![z_t](https://latex.codecogs.com/png.latex?z_t "z_t") can be difficult
 if the lag order is misspecified, which is due to the singularity of the
 covariance matrix of the innovation to
-![z_t](https://latex.codecogs.com/png.latex?z_t "z_t"),
-i.e. ![\\mathbb E (B\\varepsilon_t \\varepsilon_t'B')=B\\Sigma\_\\varepsilon B'](https://latex.codecogs.com/png.latex?%5Cmathbb%20E%20%28B%5Cvarepsilon_t%20%5Cvarepsilon_t%27B%27%29%3DB%5CSigma_%5Cvarepsilon%20B%27 "\mathbb E (B\varepsilon_t \varepsilon_t'B')=B\Sigma_\varepsilon B'")
+![z_t](https://latex.codecogs.com/png.latex?z_t "z_t"), i.e.
+![\\mathbb E (B\\varepsilon_t \\varepsilon_t'B')=B\\Sigma\_\\varepsilon B'](https://latex.codecogs.com/png.latex?%5Cmathbb%20E%20%28B%5Cvarepsilon_t%20%5Cvarepsilon_t%27B%27%29%3DB%5CSigma_%5Cvarepsilon%20B%27 "\mathbb E (B\varepsilon_t \varepsilon_t'B')=B\Sigma_\varepsilon B'")
 has rank ![q](https://latex.codecogs.com/png.latex?q "q"), which is
 smaller than
 ![r=(s+1)q](https://latex.codecogs.com/png.latex?r%3D%28s%2B1%29q "r=(s+1)q")
-whenever ![s>0](https://latex.codecogs.com/png.latex?s%3E0 "s>0").
+if ![s>0](https://latex.codecogs.com/png.latex?s%3E0 "s>0") [(Hörmann
+and Nisol,
+2021)](https://onlinelibrary.wiley.com/doi/pdf/10.1111/jtsa.12568). On
+the other hand, the law of motion for
+![z_t^\*](https://latex.codecogs.com/png.latex?z_t%5E%2A "z_t^*") is
+standard non-singular VAR in our setup. These two examples make the case
+that the “static” method is suboptimal whenever
+![s>0](https://latex.codecogs.com/png.latex?s%3E0 "s>0") and warrant
+considering other alternatives, development of which is the main goal of
+our paper.
 
 ## Data
 
+The package makes available three different macroeconomic panels of data
+measured at a monthly frequency. First is the data used by [Forni and
+Gambetti
+(2010)](http://pareto.uab.es/lgambetti/ForniGambettiJMEsecondRevSecondStage.pdf),
+and the documentation can be accessed typing `?FG_data` to the R
+console. Second and third data sets, `FRED_light` and `FRED_heavy`
+originate from the FRED-MD data set, which is documented carefully in
+[McCracken and Ng
+(2015)](https://s3.amazonaws.com/real.stlouisfed.org/wp/2015/2015-012.pdf).
+The difference between the data sets concerns the transformations to
+obtain stationarity, while the time span is same in both data sets to
+facilitate comparison to [Forni and Gambetti
+(2010)](http://pareto.uab.es/lgambetti/ForniGambettiJMEsecondRevSecondStage.pdf).
+The details can be accessed by `?FRED_light` or `?FRED_heavy`.
+
 ## Replication of the monetary policy example
+
+The empirical example compares the DFMs estimated by [Forni and Gambetti
+(2010)](http://pareto.uab.es/lgambetti/ForniGambettiJMEsecondRevSecondStage.pdf)
+to that developed in our paper. The idea is to assess the effects of
+monetary policy to key macroeconomic variables via structural DFMs,
+which guards against the omitted variable bias, to which the SVAR
+methods can be more susceptible.
 
 -   The idea of the empirical example
 -   The functions used in the exercise
