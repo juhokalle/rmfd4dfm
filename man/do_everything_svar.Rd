@@ -11,7 +11,8 @@ do_everything_svar(df, k, nrep = 500, h = 50, ci = 0.68)
 \enumerate{
 \item \code{df}, data in a \eqn{T x n} matrix;
 \item \code{int_ix}, an index vector coding the columns corresponding to the variables included in the SVAR;
-\item \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016)
+\item \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016);
+\item \code{shock_ix}, specify the shock of interest and the normalization at impact, defaults to \code{c(3,0.5)}
 }}
 
 \item{k}{VAR order}
@@ -26,7 +27,7 @@ The estimated models are identified recursively using Cholesky decomposition of 
 matrix. As a default, the function returns the impulse responses to the third shock, the size of which
 is normalized to 0.5 on impact. For changing the shock of interest (i.e. not the third),
 and the normalization constant, the user should include a vector of length 2 in the data object
-with name "shock_ix" with the position of the shock of interest as the first element and the
+with name "shock_ix" with the position of the shock of interest as the first and the
 normalization constant as the second element.}
 }
 \value{
@@ -35,7 +36,7 @@ An \eqn{(h+1 x 3 x q)} array corresponding to the structurally identified IRFs
 \description{
 Similarly to other \code{do_everything_*} functions, \code{do_everything_svar}
 estimates the benchmark SVAR model and the associated IRFs with error bands.
-Note that the data object is similar as in the other do_everything_* functions,
+Note that the data object is similar as in the other \code{do_everything_*} functions,
 i.e. the data matrix contains all the variables and those included in the
 SVAR are indexed with a vector (see below).
 }

@@ -22,6 +22,7 @@ do_everything_rmfd(
 \item \code{df}, data in a \eqn{T x n} matrix;
 \item \code{int_ix}, an index vector coding the columns corresponding to the variables of interest in the data;
 \item \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016)
+\item \code{shock_ix}, specify the shock of interest and the normalization at impact, defaults to \code{c(3,0.5)}
 }}
 
 \item{r}{state dimension of the D-DFM in state space model}

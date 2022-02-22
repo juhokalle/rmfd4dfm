@@ -11,7 +11,8 @@ do_everything_fglr(df, r, k, h, nrep = 500, ci = 0.8)
 \enumerate{
 \item \code{df}, data in a \eqn{T x n} matrix;
 \item \code{int_ix}, an index vector coding the columns corresponding to the variables of interest in the data;
-\item \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016)
+\item \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016);
+\item \code{shock_ix}, specify the shock of interest and the normalization at impact, defaults to \code{c(3,0.5)}
 }}
 
 \item{r}{static factor dimension}

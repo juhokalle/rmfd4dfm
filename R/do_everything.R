@@ -13,6 +13,7 @@
 #' 1) \code{df}, data in a \eqn{T x n} matrix;
 #' 2) \code{int_ix}, an index vector coding the columns corresponding to the variables of interest in the data;
 #' 3) \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016)
+#' 4) \code{shock_ix}, specify the shock of interest and the normalization at impact, defaults to \code{c(3,0.5)}
 #' @param r state dimension of the D-DFM in state space model
 #' @param h estimate \eqn{h}-step ahead IRFs
 #' @param nrep number of replications in the block bootstrap procedure, set to zero for no bootstrapping
@@ -187,7 +188,8 @@ do_everything_rmfd <- function(df, r, h, nrep,
 #' @param df list containing items:
 #' 1) \code{df}, data in a \eqn{T x n} matrix;
 #' 2) \code{int_ix}, an index vector coding the columns corresponding to the variables of interest in the data;
-#' 3) \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016)
+#' 3) \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016);
+#' 4) \code{shock_ix}, specify the shock of interest and the normalization at impact, defaults to \code{c(3,0.5)}
 #' @param r static factor dimension
 #' @param k VAR degree on the static factors
 #' @param h h-step ahead IRFs
@@ -211,18 +213,20 @@ do_everything_rmfd <- function(df, r, h, nrep,
 do_everything_fglr <- function(df, r, k, h, nrep = 500, ci = 0.8){
 
   q <- length(df$int_ix)
+  # fix the shock of interest and the normalization
+  if(is.null(df$shock_ix)) df$shock_ix <- c(3, 0.5)
   # Confidence intervals
   fglr_mc <- replicate(nrep, DfmRawImp(X = X_boot(df$df, 52), q = q, r = r, k = k, h = h))
   fglr_irf <- sapply(1:nrep,
                      function(x) chol_ident(fglr_mc[, , ,x],
                                             int_vars = df$int_ix,
                                             est_type = "fglr") %>%
-                       finalize_irf(shock_size = 0.5,
-                                    norm_id = c(df$int_ix[3],3),
-                                    int_vars = df$int_ix,
-                                    trans_ix = df$trans_ix),
+                       finalize_irf(shock_size = df$shock_ix[2],
+                                    norm_id = c(df$int_ix[df$shock_ix[1]],
+                                                df$shock_ix[1]),
+                                    trans_ix = df$trans_ix,
+                                    int_vars = df$int_ix),
                      simplify = "array")
-
   fglr_irf <- apply(fglr_irf, c(1,2),
                     function(x) stats::quantile(x, probs = c((1-ci)/2, .5, 1-(1-ci)/2))) %>%
     aperm(perm = c(2,1,3))
@@ -231,11 +235,11 @@ do_everything_fglr <- function(df, r, k, h, nrep = 500, ci = 0.8){
   fglr_point <- DfmRawImp(X = df$df, q = q, r = r, k = k, h = h)
   fglr_irf[,2,] <- fglr_point %>%
     chol_ident(int_vars = df$int_ix, est_type = "fglr") %>%
-    finalize_irf(shock_size = 0.5,
-                 norm_id = c(df$int_ix[3],3),
-                 int_vars = df$int_ix,
-                 trans_ix = df$trans_ix)
-
+    finalize_irf(shock_size = df$shock_ix[2],
+                 norm_id = c(df$int_ix[df$shock_ix[1]],
+                             df$shock_ix[1]),
+                 trans_ix = df$trans_ix,
+                 int_vars = df$int_ix)
   return(fglr_irf)
 }
 
@@ -244,7 +248,7 @@ do_everything_fglr <- function(df, r, k, h, nrep = 500, ci = 0.8){
 #' @description
 #' Similarly to other \code{do_everything_*} functions, \code{do_everything_svar}
 #' estimates the benchmark SVAR model and the associated IRFs with error bands.
-#' Note that the data object is similar as in the other do_everything_* functions,
+#' Note that the data object is similar as in the other \code{do_everything_*} functions,
 #' i.e. the data matrix contains all the variables and those included in the
 #' SVAR are indexed with a vector (see below).
 #'
@@ -253,7 +257,8 @@ do_everything_fglr <- function(df, r, k, h, nrep = 500, ci = 0.8){
 #' @param df list containing items:
 #' 1) \code{df}, data in a \eqn{T x n} matrix;
 #' 2) \code{int_ix}, an index vector coding the columns corresponding to the variables included in the SVAR;
-#' 3) \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016)
+#' 3) \code{trans_ix}, an index vector giving the variable transformation codes as in McCracken and Ng (2016);
+#' 4) \code{shock_ix}, specify the shock of interest and the normalization at impact, defaults to \code{c(3,0.5)}
 #' @param k VAR order
 #' @param h h-step ahead IRFs
 #' @param nrep number of replications in the bootstrap
@@ -263,7 +268,7 @@ do_everything_fglr <- function(df, r, k, h, nrep = 500, ci = 0.8){
 #' matrix. As a default, the function returns the impulse responses to the third shock, the size of which
 #' is normalized to 0.5 on impact. For changing the shock of interest (i.e. not the third),
 #' and the normalization constant, the user should include a vector of length 2 in the data object
-#' with name "shock_ix" with the position of the shock of interest as the first element and the
+#' with name "shock_ix" with the position of the shock of interest as the first and the
 #' normalization constant as the second element.
 #'
 #' @references McCracken, M. W., & Ng, S. (2016). FRED-MD: A monthly database for macroeconomic research.
@@ -280,6 +285,9 @@ do_everything_fglr <- function(df, r, k, h, nrep = 500, ci = 0.8){
 do_everything_svar <- function(df, k, nrep = 500, h = 50, ci = 0.68){
 
   q <- length(df$int_ix)
+  # fix the shock of interest and the normalization
+  if(is.null(df$shock_ix)) df$shock_ix <- c(3, 0.5)
+  # pre-allocate
   irf_arr <- array(0, dim = c(q, q, h+1, nrep))
   # obtain first the bootstrap sample and subsequently the point estimates
   for(j in 1:nrep){
@@ -295,8 +303,8 @@ do_everything_svar <- function(df, k, nrep = 500, h = 50, ci = 0.68){
   }
 
   svar_irf <- apply(irf_arr, c(1,2,3), function(x) stats::quantile(x, probs = c((1-ci)/2, .5, 1-(1-ci)/2)))
-  svar_irf <- sapply(1:3, function(x) svar_irf[x,,,] %>% finalize_irf(shock_size = 0.5,
-                                                                      norm_id = c(3,3),
+  svar_irf <- sapply(1:3, function(x) svar_irf[x,,,] %>% finalize_irf(shock_size = df$shock_ix[2],
+                                                                      norm_id = rep(df$shock_ix[1],2),
                                                                       trans_ix = df$trans_ix[df$int_ix],
                                                                       int_vars = 1:q),
                      simplify = "array") %>% aperm(c(1,3,2))
@@ -310,8 +318,8 @@ do_everything_svar <- function(df, k, nrep = 500, h = 50, ci = 0.68){
     pseries(lag.max = h) %>%
     unclass() %>%
     irf_x(post_mat = var_point$model$sigma_L) %>%
-    finalize_irf(shock_size = 0.5,
-                 norm_id = c(3,3),
+    finalize_irf(shock_size = df$shock_ix[2],
+                 norm_id = rep(df$shock_ix[1],2),
                  trans_ix = df$trans_ix[df$int_ix],
                  int_vars = 1:q)
   return(svar_irf)

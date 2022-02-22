@@ -16,7 +16,7 @@ form (RMFD-E), which is introduced in [Section
 2.2](https://arxiv.org/pdf/2202.00310.pdf#subsection.2.2) of the
 associated paper. This document also shows how to replicate the
 empirical exercise of [Section
-5](https://arxiv.org/pdf/2202.00310.pdf#section.5).
+4](https://arxiv.org/pdf/2202.00310.pdf#section.4).
 
 The package builds on the R-packages **rationalmatrices** and **RLDM**,
 authored by Bernd Funovits and Wolfgang Scherrer. Since these packages
@@ -98,7 +98,7 @@ where
     ![\\mathbb E (u_t u_t') = I_q](https://latex.codecogs.com/png.latex?%5Cmathbb%20E%20%28u_t%20u_t%27%29%20%3D%20I_q "\mathbb E (u_t u_t') = I_q").
 -   ![H](https://latex.codecogs.com/png.latex?H "H") is
     ![(q\\times q)](https://latex.codecogs.com/png.latex?%28q%5Ctimes%20q%29 "(q\times q)")-dimensional
-    structural shock impact matrix, which we identify as
+    structural impact multiplier matrix, which we identify as
     ![H=chol(\\Sigma\_\\varepsilon)](https://latex.codecogs.com/png.latex?H%3Dchol%28%5CSigma_%5Cvarepsilon%29 "H=chol(\Sigma_\varepsilon)"),
     where
     ![chol(\\Sigma\_\\varepsilon)](https://latex.codecogs.com/png.latex?chol%28%5CSigma_%5Cvarepsilon%29 "chol(\Sigma_\varepsilon)")
@@ -215,12 +215,12 @@ The structure of the RMFD model in echelon form is quite complicated,
 and while the functions of this package `rmfd4dfm` code these
 restrictions without the need for the user to trouble herself with the
 implementation, one might still wonder what is the point of going
-through through the painstaking process of deriving and coding the
-restrictions in the first place, as there are alternatives in the
-literature? To make the point, let us introduce a popular alternative
-used in the literature and compare it with our approach. One way to deal
-with the identification and estimation of the DFM presented above is to
-stack the dynamic factors into a
+through the painstaking process of deriving and coding the restrictions
+in the first place, as there are alternatives in the literature? To make
+the point, let us introduce a popular alternative used in the literature
+and compare it with our approach. One way to deal with the
+identification and estimation of the DFM presented above is to stack the
+dynamic factors into a
 ![r=q(s+1)](https://latex.codecogs.com/png.latex?r%3Dq%28s%2B1%29 "r=q(s+1)")-dimensional
 vector
 
@@ -239,14 +239,21 @@ x_t = \left(d_0,\cdots,d_s\right)z_t + \xi_t = Dz_t + \xi_t,
 ")
 
 which makes the model amenable to the principal components (PC) methods.
-In the second step, the static factor process is modelled as a VAR
-process,
-![A(L)z_t = B\\varepsilon_t](https://latex.codecogs.com/png.latex?A%28L%29z_t%20%3D%20B%5Cvarepsilon_t "A(L)z_t = B\varepsilon_t"),
+In the second step, the static factor process is modelled as a
+VAR(![k](https://latex.codecogs.com/png.latex?k "k")) process
+
+![
+z_t - A_1 z\_{t-1} - \\cdots - A_k z\_{t-k} = A(L)z_t = B\\varepsilon_t,
+](https://latex.codecogs.com/png.latex?%0Az_t%20-%20A_1%20z_%7Bt-1%7D%20-%20%5Ccdots%20-%20A_k%20z_%7Bt-k%7D%20%3D%20A%28L%29z_t%20%3D%20B%5Cvarepsilon_t%2C%0A "
+z_t - A_1 z_{t-1} - \cdots - A_k z_{t-k} = A(L)z_t = B\varepsilon_t,
+")
+
 where ![A(L)](https://latex.codecogs.com/png.latex?A%28L%29 "A(L)") is
 an
 ![r \\times r](https://latex.codecogs.com/png.latex?r%20%5Ctimes%20r "r \times r")
-lag polynomial, and ![B](https://latex.codecogs.com/png.latex?B "B") is
-an
+VAR lag polynomial of order
+![k](https://latex.codecogs.com/png.latex?k "k"), and
+![B](https://latex.codecogs.com/png.latex?B "B") is an
 ![r\\times q](https://latex.codecogs.com/png.latex?r%5Ctimes%20q "r\times q")
 constant matrix. After the estimation of
 ![D](https://latex.codecogs.com/png.latex?D "D") and
@@ -256,12 +263,11 @@ can be constructed straightforwardly.
 
 This alternative using PCs is straightforward from an estimation point
 of view, but let us point two associated restrictive features. First,
-note that whenever
-![s>0](https://latex.codecogs.com/png.latex?s%3E0 "s>0"), the minimal
-number of parameter restrictions needed is
+note that the minimal number of identifying restrictions needed is
 ![r=q(s+1)](https://latex.codecogs.com/png.latex?r%3Dq%28s%2B1%29 "r=q(s+1)"),
-which is higher than that of needed in our parametrization,
-i.e. ![q](https://latex.codecogs.com/png.latex?q "q") [(Bai and Wang,
+which is higher than that of in our parametrization,
+i.e. ![q](https://latex.codecogs.com/png.latex?q "q"), whenever
+![s>0](https://latex.codecogs.com/png.latex?s%3E0 "s>0") [(Bai and Wang,
 2012)](https://mpra.ub.uni-muenchen.de/38434/2/MPRA_paper_38434.pdf).
 Second, we note that the reliable estimation of VAR on
 ![z_t](https://latex.codecogs.com/png.latex?z_t "z_t") can be difficult
@@ -309,12 +315,35 @@ monetary policy to key macroeconomic variables via structural DFMs,
 which guards against the omitted variable bias, to which the SVAR
 methods can be more susceptible.
 
+The following code snippets show how to replicate the results given in
+the empirical section of our paper. First, we include an index vector
+coding the columns corresponding to the variables of interest in the
+structural analysis in the data object. In the structural analysis with
+recursive identification, the ordering is important, as it determines
+the short-run restrictions imposed on the structural impact multiplier
+matrix. (For a brief and to the point summary of the structural
+identification using DFMs, see [Section
+9](www.barigozzi.eu/MB_DF_lecture_notes_online.pdf#page=58) of the
+lecture notes written by [Matteo
+Barigozzi](http://www.barigozzi.eu/Home.html).)
+
 ``` r
 pkgs <- library("gridExtra") # for nice plots
 # code the positions of the variables of interest
 int_vars_fred <- c("INDPRO", "CPIAUCSL", "FEDFUNDS", "EXSZUSx")
 FRED_heavy$int_ix <- sapply(int_vars_fred, function(x) which(names(FRED_heavy$df)==x))
 ```
+
+Second, we need to determine the static factor dimension. This is needed
+for the determining the state dimension in the state space
+representation of eqs. (1)–(2), while in the “static” method it defines
+the dimension of ![z_t](https://latex.codecogs.com/png.latex?z_t "z_t").
+To this end, we use functions `baingcriterion` and `abc_crit`, which
+implement the tests developed in [Bai and Ng
+(2002)](https://www.ssc.wisc.edu/~bhansen/718/BaiNg2002.pdf) and
+[Alessi, Barigozzi and Capasso
+(2009)](https://dipot.ulb.ac.be/dspace/bitstream/2013/54139/1/RePEc_eca_wpaper_2009_023.pdf),
+respectively.
 
 ``` r
 # Estimate the number of static factors ####
@@ -328,16 +357,40 @@ r_hats <- c("ICp1" = baing_cr[1],
             )
 ```
 
+Upon fixing the state dimension of the state space representation of
+eqs. (1)–(2), estimation of the DFM can be carried out. Here we fix the
+static factor dimension to 8. In the RMFD-E parametrization of the DFM
+and for a given state dimension, it is likely that one has many model
+specifications available from which to choose “the best model”.
+Therefore, the function `do_everything_rmfd` estimates all the model
+alternatives that are consistent with the model selection criteria given
+in [Section 3.3.](https://arxiv.org/pdf/2202.00310.pdf#subsection.3.3)
+and chooses the one that minimizes Bayesian information criterion. For
+this model, the function then estimates confidence intervals for the IRF
+using block bootstrap. Finally, the function returns the impulse
+responses of the variables to third shock, which is standardized to have
+an immediate impact of 0.5. For responses to other shocks and/or size,
+one can include an index vector of length two, which specifies the shock
+of interest and normalization constant, in the data object specified as
+the first argument of `do_everything_rmfd` by `df$shock_ix`. For a more
+flexible estimation setup, the user can consult function `estim_wrap`,
+which produces an estimate of the non-structural IRF
+![k(L)=d(L)c(L)^{-1}](https://latex.codecogs.com/png.latex?k%28L%29%3Dd%28L%29c%28L%29%5E%7B-1%7D "k(L)=d(L)c(L)^{-1}")
+for a given model structure. The functions `do_everything_fglr` and
+`do_everything_svar` perform the same task for the static DFM and
+structural VAR, respectively.
+
 ``` r
-est_obj0 <- do_everything_rmfd(df = FRED_heavy,
-                               r = 8,
-                               h = 50,
-                               nrep = 10,
-                               conv_crit = 1e-3,
-                               ci = 0.8,
-                               init_rep = 1,
-                               verbose = TRUE)
-# DFM-FGLR
+# D-DFM
+est_obj <- do_everything_rmfd(df = FRED_heavy,
+                              r = 8,
+                              h = 50,
+                              nrep = 500,
+                              conv_crit = 1e-5,
+                              ci = 0.8,
+                              init_rep = 1,
+                              verbose = TRUE)
+# S-DFM
 est_fglr <- do_everything_fglr(df = FRED_heavy,
                                r = 8,
                                k = 2,
@@ -353,8 +406,12 @@ svar_irf <- do_everything_svar(df = FRED_heavy,
                                ci = 0.8)
 ```
 
+Finally, the `plot_irfs` function returns the IRFs along with the
+possible error bands in a nice plot. To gather the IRF plots into one
+figure, which can then be exported to pdf, for example, we use
+`gridExtra::marrangeGrob`.
+
 ``` r
-# IRF plots #####
 p1 <- plot_irfs(est_obj$irf, int_vars_fred, "D-DFM")
 p2 <- plot_irfs(est_fglr$irf, int_vars_fred, "S-DFM", label_y = FALSE)
 p3 <- plot_irfs(svar_irf, int_vars_fred, "SVAR", label_y = FALSE)
