@@ -46,21 +46,21 @@ with the emphasis placed on macroeconomic applications and and analysis.
 The model of interest is given as
 
 ![
-x\_{t} =d\_{0}z\_{t}^{\*}+d\_{1}z\_{t-1}^{\*}+\\cdots+d\_{s}z\_{t-s}^{\*}+\\xi\_{t} \\tag{1}
-](https://latex.codecogs.com/png.latex?%0Ax_%7Bt%7D%20%3Dd_%7B0%7Dz_%7Bt%7D%5E%7B%2A%7D%2Bd_%7B1%7Dz_%7Bt-1%7D%5E%7B%2A%7D%2B%5Ccdots%2Bd_%7Bs%7Dz_%7Bt-s%7D%5E%7B%2A%7D%2B%5Cxi_%7Bt%7D%20%5Ctag%7B1%7D%0A "
-x_{t} =d_{0}z_{t}^{*}+d_{1}z_{t-1}^{*}+\cdots+d_{s}z_{t-s}^{*}+\xi_{t} \tag{1}
+ (1): \\quad x\_{t} =d\_{0}z\_{t}^{\*}+d\_{1}z\_{t-1}^{\*}+\\cdots+d\_{s}z\_{t-s}^{\*}+\\xi\_{t}
+](https://latex.codecogs.com/png.latex?%0A%20%281%29%3A%20%5Cquad%20x_%7Bt%7D%20%3Dd_%7B0%7Dz_%7Bt%7D%5E%7B%2A%7D%2Bd_%7B1%7Dz_%7Bt-1%7D%5E%7B%2A%7D%2B%5Ccdots%2Bd_%7Bs%7Dz_%7Bt-s%7D%5E%7B%2A%7D%2B%5Cxi_%7Bt%7D%0A "
+ (1): \quad x_{t} =d_{0}z_{t}^{*}+d_{1}z_{t-1}^{*}+\cdots+d_{s}z_{t-s}^{*}+\xi_{t}
 ")
 
 ![
-z\_{t}^{\*} =c\_{1}z\_{t-1}^{\*}+\\cdots+c\_{p}z\_{t-p}^{\*}+\\varepsilon\_{t} \\tag{2}
-](https://latex.codecogs.com/png.latex?%0Az_%7Bt%7D%5E%7B%2A%7D%20%3Dc_%7B1%7Dz_%7Bt-1%7D%5E%7B%2A%7D%2B%5Ccdots%2Bc_%7Bp%7Dz_%7Bt-p%7D%5E%7B%2A%7D%2B%5Cvarepsilon_%7Bt%7D%20%5Ctag%7B2%7D%0A "
-z_{t}^{*} =c_{1}z_{t-1}^{*}+\cdots+c_{p}z_{t-p}^{*}+\varepsilon_{t} \tag{2}
+(2): \\quad z\_{t}^{\*} =c\_{1}z\_{t-1}^{\*}+\\cdots+c\_{p}z\_{t-p}^{\*}+\\varepsilon\_{t}
+](https://latex.codecogs.com/png.latex?%0A%282%29%3A%20%5Cquad%20z_%7Bt%7D%5E%7B%2A%7D%20%3Dc_%7B1%7Dz_%7Bt-1%7D%5E%7B%2A%7D%2B%5Ccdots%2Bc_%7Bp%7Dz_%7Bt-p%7D%5E%7B%2A%7D%2B%5Cvarepsilon_%7Bt%7D%0A "
+(2): \quad z_{t}^{*} =c_{1}z_{t-1}^{*}+\cdots+c_{p}z_{t-p}^{*}+\varepsilon_{t}
 ")
 
 ![
-\\varepsilon\_{t}=Hu\_{t} \\tag{3}
-](https://latex.codecogs.com/png.latex?%0A%5Cvarepsilon_%7Bt%7D%3DHu_%7Bt%7D%20%5Ctag%7B3%7D%0A "
-\varepsilon_{t}=Hu_{t} \tag{3}
+(3): \\quad \\varepsilon\_{t}=Hu\_{t}
+](https://latex.codecogs.com/png.latex?%0A%283%29%3A%20%5Cquad%20%5Cvarepsilon_%7Bt%7D%3DHu_%7Bt%7D%0A "
+(3): \quad \varepsilon_{t}=Hu_{t}
 ")
 
 where
@@ -110,12 +110,30 @@ where
 
 We can write Eq. (2) compactly as
 ![z_t^\*=c(L)^{-1}\\varepsilon_t](https://latex.codecogs.com/png.latex?z_t%5E%2A%3Dc%28L%29%5E%7B-1%7D%5Cvarepsilon_t "z_t^*=c(L)^{-1}\varepsilon_t")
-and substitute this and Eq. (3) into Eq (1) to get
-![x_t=d(L)c(L)^{-1}H u_t + \\xi_t](https://latex.codecogs.com/png.latex?x_t%3Dd%28L%29c%28L%29%5E%7B-1%7DH%20u_t%20%2B%20%5Cxi_t "x_t=d(L)c(L)^{-1}H u_t + \xi_t"),
+and substitute this and Eq. (3) into Eq. (1) to get
+
+![
+x_t=d(L)c(L)^{-1}H u_t + \\xi_t,
+](https://latex.codecogs.com/png.latex?%0Ax_t%3Dd%28L%29c%28L%29%5E%7B-1%7DH%20u_t%20%2B%20%5Cxi_t%2C%0A "
+x_t=d(L)c(L)^{-1}H u_t + \xi_t,
+")
+
 where
-![c(L)=I_q-c_1 L - \\cdots - c_p L^p](https://latex.codecogs.com/png.latex?c%28L%29%3DI_q-c_1%20L%20-%20%5Ccdots%20-%20c_p%20L%5Ep "c(L)=I_q-c_1 L - \cdots - c_p L^p")
+
+![
+c(L)=I_q-c_1 L - \\cdots - c_p L^p
+](https://latex.codecogs.com/png.latex?%0Ac%28L%29%3DI_q-c_1%20L%20-%20%5Ccdots%20-%20c_p%20L%5Ep%0A "
+c(L)=I_q-c_1 L - \cdots - c_p L^p
+")
+
 and
-![d(L)=d_0 + d_1 L + \\cdots + d_sL^s](https://latex.codecogs.com/png.latex?d%28L%29%3Dd_0%20%2B%20d_1%20L%20%2B%20%5Ccdots%20%2B%20d_sL%5Es "d(L)=d_0 + d_1 L + \cdots + d_sL^s").
+
+![
+d(L)=d_0 + d_1 L + \\cdots + d_sL^s.
+](https://latex.codecogs.com/png.latex?%0Ad%28L%29%3Dd_0%20%2B%20d_1%20L%20%2B%20%5Ccdots%20%2B%20d_sL%5Es.%0A "
+d(L)=d_0 + d_1 L + \cdots + d_sL^s.
+")
+
 If we assume that the idiosyncratic component accounts for measurements
 errors or sectoral dynamics that pertain to a small number of variables,
 we can use the structural IRF
@@ -133,8 +151,14 @@ post-multiply
 ![q\\times q](https://latex.codecogs.com/png.latex?q%5Ctimes%20q "q\times q")
 polynomial matrix
 ![m(L)](https://latex.codecogs.com/png.latex?m%28L%29 "m(L)") such that
-it “cancels out”
-![k(L)=d(L)c(L)^{-1}=\[d(L)m(L)\]\[c(L)m(L)\]^{-1}=\\bar d(L) \\bar c(L)^{-1}](https://latex.codecogs.com/png.latex?k%28L%29%3Dd%28L%29c%28L%29%5E%7B-1%7D%3D%5Bd%28L%29m%28L%29%5D%5Bc%28L%29m%28L%29%5D%5E%7B-1%7D%3D%5Cbar%20d%28L%29%20%5Cbar%20c%28L%29%5E%7B-1%7D "k(L)=d(L)c(L)^{-1}=[d(L)m(L)][c(L)m(L)]^{-1}=\bar d(L) \bar c(L)^{-1}").
+it “cancels out”:
+
+![
+k(L)=d(L)c(L)^{-1}=\[d(L)m(L)\]\[c(L)m(L)\]^{-1}=\\bar d(L) \\bar c(L)^{-1}.
+](https://latex.codecogs.com/png.latex?%0Ak%28L%29%3Dd%28L%29c%28L%29%5E%7B-1%7D%3D%5Bd%28L%29m%28L%29%5D%5Bc%28L%29m%28L%29%5D%5E%7B-1%7D%3D%5Cbar%20d%28L%29%20%5Cbar%20c%28L%29%5E%7B-1%7D.%0A "
+k(L)=d(L)c(L)^{-1}=[d(L)m(L)][c(L)m(L)]^{-1}=\bar d(L) \bar c(L)^{-1}.
+")
+
 The problem is that the researcher cannot distinguish between
 ![d(L)c(L)^{-1}](https://latex.codecogs.com/png.latex?d%28L%29c%28L%29%5E%7B-1%7D "d(L)c(L)^{-1}")
 and
@@ -167,7 +191,13 @@ suitable dimensions, and here
 pre-multiplied by some lag polynomial
 ![m(L)](https://latex.codecogs.com/png.latex?m%28L%29 "m(L)") to obtain
 an observationally equivalent IRF:
-![k(L)=a(L)^{-1}b(L)=\[m(L)a(L)\]^{-1}\[m(L)b(L)\]=\\bar a(L)^{-1}\\bar b(L)](https://latex.codecogs.com/png.latex?k%28L%29%3Da%28L%29%5E%7B-1%7Db%28L%29%3D%5Bm%28L%29a%28L%29%5D%5E%7B-1%7D%5Bm%28L%29b%28L%29%5D%3D%5Cbar%20a%28L%29%5E%7B-1%7D%5Cbar%20b%28L%29 "k(L)=a(L)^{-1}b(L)=[m(L)a(L)]^{-1}[m(L)b(L)]=\bar a(L)^{-1}\bar b(L)").
+
+![
+k(L)=a(L)^{-1}b(L)=\[m(L)a(L)\]^{-1}\[m(L)b(L)\]=\\bar a(L)^{-1}\\bar b(L).
+](https://latex.codecogs.com/png.latex?%0Ak%28L%29%3Da%28L%29%5E%7B-1%7Db%28L%29%3D%5Bm%28L%29a%28L%29%5D%5E%7B-1%7D%5Bm%28L%29b%28L%29%5D%3D%5Cbar%20a%28L%29%5E%7B-1%7D%5Cbar%20b%28L%29.%0A "
+k(L)=a(L)^{-1}b(L)=[m(L)a(L)]^{-1}[m(L)b(L)]=\bar a(L)^{-1}\bar b(L).
+")
+
 One popular identification approach for the VARMA model is to use the
 canonical echelon form parametrization, which involves zero and unity
 restrictions in
@@ -193,11 +223,21 @@ with the identification and estimation of the DFM presented above is to
 stack the dynamic factors into a
 ![r=q(s+1)](https://latex.codecogs.com/png.latex?r%3Dq%28s%2B1%29 "r=q(s+1)")-dimensional
 vector
-![z_t = \\left(z_t^{\*'}, z\_{t-1}^{\*'}, \\cdots, z\_{t-s}^{\*'} \\right)'](https://latex.codecogs.com/png.latex?z_t%20%3D%20%5Cleft%28z_t%5E%7B%2A%27%7D%2C%20z_%7Bt-1%7D%5E%7B%2A%27%7D%2C%20%5Ccdots%2C%20z_%7Bt-s%7D%5E%7B%2A%27%7D%20%5Cright%29%27 "z_t = \left(z_t^{*'}, z_{t-1}^{*'}, \cdots, z_{t-s}^{*'} \right)'"),
+
+![
+z_t = \\left(z_t^{\*'}, z\_{t-1}^{\*'}, \\cdots, z\_{t-s}^{\*'} \\right)',
+](https://latex.codecogs.com/png.latex?%0Az_t%20%3D%20%5Cleft%28z_t%5E%7B%2A%27%7D%2C%20z_%7Bt-1%7D%5E%7B%2A%27%7D%2C%20%5Ccdots%2C%20z_%7Bt-s%7D%5E%7B%2A%27%7D%20%5Cright%29%27%2C%0A "
+z_t = \left(z_t^{*'}, z_{t-1}^{*'}, \cdots, z_{t-s}^{*'} \right)',
+")
+
 and write Eq. (1) as
-![x_t=Dz_t + \\xi_t](https://latex.codecogs.com/png.latex?x_t%3DDz_t%20%2B%20%5Cxi_t "x_t=Dz_t + \xi_t"),
-where
-![D=\\left(d_0,\\cdots,d_s\\right)](https://latex.codecogs.com/png.latex?D%3D%5Cleft%28d_0%2C%5Ccdots%2Cd_s%5Cright%29 "D=\left(d_0,\cdots,d_s\right)"),
+
+![
+x_t = \\left(d_0,\\cdots,d_s\\right)z_t + \\xi_t = Dz_t + \\xi_t,
+](https://latex.codecogs.com/png.latex?%0Ax_t%20%3D%20%5Cleft%28d_0%2C%5Ccdots%2Cd_s%5Cright%29z_t%20%2B%20%5Cxi_t%20%3D%20Dz_t%20%2B%20%5Cxi_t%2C%0A "
+x_t = \left(d_0,\cdots,d_s\right)z_t + \xi_t = Dz_t + \xi_t,
+")
+
 which makes the model amenable to the principal components (PC) methods.
 In the second step, the static factor process is modelled as a VAR
 process,
@@ -249,7 +289,7 @@ The package makes available three different macroeconomic panels of data
 measured at a monthly frequency. First is the data used by [Forni and
 Gambetti
 (2010)](http://pareto.uab.es/lgambetti/ForniGambettiJMEsecondRevSecondStage.pdf),
-and the documentation can be accessed typing `?FG_data` to the R
+and the documentation can be accessed using command `?FG_data` in the R
 console. Second and third data sets, `FRED_light` and `FRED_heavy`
 originate from the FRED-MD data set, which is documented carefully in
 [McCracken and Ng
@@ -269,6 +309,54 @@ monetary policy to key macroeconomic variables via structural DFMs,
 which guards against the omitted variable bias, to which the SVAR
 methods can be more susceptible.
 
--   The idea of the empirical example
--   The functions used in the exercise
--   Obtaining the results
+``` r
+pkgs <- library("gridExtra") # for nice plots
+# code the positions of the variables of interest
+int_vars_fred <- c("INDPRO", "CPIAUCSL", "FEDFUNDS", "EXSZUSx")
+FRED_heavy$int_ix <- sapply(int_vars_fred, function(x) which(names(FRED_heavy$df)==x))
+```
+
+``` r
+# Estimate the number of static factors ####
+baing_cr <- baingcriterion(FRED_heavy$df, rmax = 25)$IC[1:2]
+abc_cr <- replicate(50, abc_crit(FRED_heavy$df, kmax = 25))
+get_mode <- function(x) unique(x)[which.max(colSums(sapply(unique(x), function(z) x %in% z)))]
+r_hats <- c("ICp1" = baing_cr[1],
+            "ICp2" = baing_cr[2],
+            "ABCp1" = get_mode(unlist(abc_cr[1,])),
+            "ABCp2" = get_mode(unlist(abc_cr[2,]))
+            )
+```
+
+``` r
+est_obj0 <- do_everything_rmfd(df = FRED_heavy,
+                               r = 8,
+                               h = 50,
+                               nrep = 10,
+                               conv_crit = 1e-3,
+                               ci = 0.8,
+                               init_rep = 1,
+                               verbose = TRUE)
+# DFM-FGLR
+est_fglr <- do_everything_fglr(df = FRED_heavy,
+                               r = 8,
+                               k = 2,
+                               h = 50,
+                               nrep = 500,
+                               ci = 0.8)
+
+# SVAR
+svar_irf <- do_everything_svar(df = FRED_heavy,
+                               p = 9,
+                               nrep = 500,
+                               h = 50,
+                               ci = 0.8)
+```
+
+``` r
+# IRF plots #####
+p1 <- plot_irfs(est_obj$irf, int_vars_fred, "D-DFM")
+p2 <- plot_irfs(est_fglr$irf, int_vars_fred, "S-DFM", label_y = FALSE)
+p3 <- plot_irfs(svar_irf, int_vars_fred, "SVAR", label_y = FALSE)
+plot1 <- marrangeGrob(c(p1,p2,p3), nrow = 4, ncol = 3, top = NULL)
+```
