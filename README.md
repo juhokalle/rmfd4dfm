@@ -323,8 +323,8 @@ recursive identification, the ordering is important, as it determines
 the short-run restrictions imposed on the structural impact multiplier
 matrix. (For a brief and to the point summary of the structural
 identification using DFMs, see [Section
-9](www.barigozzi.eu/MB_DF_lecture_notes_online.pdf#page=58) of the
-lecture notes written by [Matteo
+9](http://www.barigozzi.eu/MB_DF_lecture_notes_online.pdf#page=58) of
+the lecture notes written by [Matteo
 Barigozzi](http://www.barigozzi.eu/Home.html).)
 
 ``` r
