@@ -2,7 +2,10 @@ Estimation of Impulse-Response Functions with Dynamic Factor Models: A
 New Parametrization
 ================
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/juhokalle/rmfd4dfm/workflows/R-CMD-check/badge.svg)](https://github.com/juhokalle/rmfd4dfm/actions)
+<!-- badges: end -->
 
 This repository contains the associated R-package and data to the paper
 [Estimation of Impulse-Response Functions with Dynamic Factor Models: A

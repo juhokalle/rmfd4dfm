@@ -5,7 +5,6 @@ output:
     pandoc_args: --webtex
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -15,6 +14,10 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
+
+<!-- badges: start -->
+  [![R-CMD-check](https://github.com/juhokalle/rmfd4dfm/workflows/R-CMD-check/badge.svg)](https://github.com/juhokalle/rmfd4dfm/actions)
+<!-- badges: end -->
 
 This repository contains the associated R-package and data to the paper 
 [Estimation of Impulse-Response Functions with Dynamic Factor Models: A New Parametrization](https://arxiv.org/pdf/2202.00310) authored by Juho Koistinen and
