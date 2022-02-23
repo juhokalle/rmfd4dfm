@@ -134,8 +134,7 @@ do_everything_rmfd <- function(df, r, h, nrep,
                          h = h,
                          verbose = verbose,
                          nrep = nrep,
-                         int_vars = df$int_ix,
-                         save_file = TRUE)
+                         int_vars = df$int_ix)
     rmfd_irf <- apply(rmfd_mc, c(1,2,3), function(x) stats::quantile(x, probs = c((1-ci)/2, .5, 1-(1-ci)/2)))
     rmfd_irf <- sapply(1:3, function(x) rmfd_irf[x,,,] %>% finalize_irf(shock_size = df$shock_ix[2],
                                                                         norm_id = c(df$int_ix[df$shock_ix[1]],

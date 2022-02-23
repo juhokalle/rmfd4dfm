@@ -8,10 +8,6 @@
 #' @return New file path
 #' @keywords internal
 #'
-#' @examples
-#' path = "../local_data_ukko2/"
-#' pap = pap_factory(path)
-#' pap("myfile.whatever")
 pap_factory <- function(path){
   function(str){
     paste0(path, str)

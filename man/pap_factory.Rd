@@ -16,9 +16,4 @@ New file path
 Path is in enclosing environment!
 Helper for running scripts.
 }
-\examples{
-path = "../local_data_ukko2/"
-pap = pap_factory(path)
-pap("myfile.whatever")
-}
 \keyword{internal}
