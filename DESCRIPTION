@@ -27,7 +27,6 @@ Imports:
     QZ,
     Rcpp,
     stats,
-    RcppArmadillo,
     tibble,
     utils
 Suggests:
