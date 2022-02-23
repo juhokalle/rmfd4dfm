@@ -306,7 +306,7 @@ facilitate comparison to [Forni and Gambetti
 (2010)](http://pareto.uab.es/lgambetti/ForniGambettiJMEsecondRevSecondStage.pdf).
 The details can be accessed by `?FRED_light` or `?FRED_heavy`.
 
-## Replication of the monetary policy example
+## Replication of the Monetary Policy Example
 
 The empirical example compares the DFMs estimated by [Forni and Gambetti
 (2010)](http://pareto.uab.es/lgambetti/ForniGambettiJMEsecondRevSecondStage.pdf)
@@ -368,13 +368,14 @@ in [Section 3.3.](https://arxiv.org/pdf/2202.00310.pdf#subsection.3.3)
 and chooses the one that minimizes Bayesian information criterion. For
 this model, the function then estimates confidence intervals for the IRF
 using block bootstrap. Finally, the function returns the impulse
-responses of the variables to third shock, which is standardized to have
-an immediate impact of 0.5. For responses to other shocks and/or size,
-one can include an index vector of length two, which specifies the shock
-of interest and normalization constant, in the data object specified as
-the first argument of `do_everything_rmfd` by `df$shock_ix`. For a more
-flexible estimation setup, the user can consult function `estim_wrap`,
-which produces an estimate of the non-structural IRF
+responses of the variables to the third shock, which is standardized to
+have an immediate impact of 0.5. For responses to other shocks and/or
+size, one can include an index vector of length two, which specifies the
+shock of interest and normalization constant, in the data object
+specified as the first argument of `do_everything_rmfd` by
+`df$shock_ix`. For a more flexible estimation setup, the user can
+consult function `estim_wrap`, which produces an estimate of the
+non-structural IRF
 ![k(L)=d(L)c(L)^{-1}](https://latex.codecogs.com/png.latex?k%28L%29%3Dd%28L%29c%28L%29%5E%7B-1%7D "k(L)=d(L)c(L)^{-1}")
 for a given model structure. The functions `do_everything_fglr` and
 `do_everything_svar` perform the same task for the static DFM and

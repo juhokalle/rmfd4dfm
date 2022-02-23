@@ -253,7 +253,7 @@ boot_irfs <- function(df, nu,
                      conv_crit = conv_crit,
                      maxit = maxit)
 
-    est_obj <- do.call(estim_wrap, args = arg_list) %>% try()
+    est_obj <- do.call(estim_wrap, args = arg_list) %>% try(silent = TRUE)
 
     if(!inherits(est_obj, 'try-error')){
       # check that Cholesky does not fail
@@ -263,6 +263,8 @@ boot_irfs <- function(df, nu,
                                                     est_type = "rmfd")
         mc_ix <- mc_ix + 1
       }
+    } else{
+      cat("\nFailure to converge, try again...\n")
     }
   }
   if(save_file) saveRDS(object = rmfd_mc, file = "rmfd_mc.Rds")

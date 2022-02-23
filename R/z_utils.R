@@ -6,7 +6,7 @@
 #' @param path file path to append to \code{path}
 #'
 #' @return New file path
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #' path = "../local_data_ukko2/"

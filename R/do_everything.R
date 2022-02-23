@@ -107,9 +107,10 @@ do_everything_rmfd <- function(df, r, h, nrep,
                      init0 = init_rep,
                      verbose = verbose,
                      h=h)
-    est_list[[jj]] <- do.call(estim_wrap, args = arg_list) %>% try()
+    est_list[[jj]] <- do.call(estim_wrap, args = arg_list) %>% try(silent=TRUE)
     while(inherits(est_list[[jj]], 'try-error')){
-      est_list[[jj]] <- do.call(estim_wrap, args = arg_list) %>% try()
+      cat("\nFailure to converge, try again...\n")
+      est_list[[jj]] <- do.call(estim_wrap, args = arg_list) %>% try(silent=TRUE)
     }
   }
 
@@ -135,7 +136,7 @@ do_everything_rmfd <- function(df, r, h, nrep,
                          nrep = nrep,
                          int_vars = df$int_ix,
                          save_file = TRUE)
-    rmfd_irf <- apply(rmfd_mc$irfs, c(1,2,3), function(x) stats::quantile(x, probs = c((1-ci)/2, .5, 1-(1-ci)/2)))
+    rmfd_irf <- apply(rmfd_mc, c(1,2,3), function(x) stats::quantile(x, probs = c((1-ci)/2, .5, 1-(1-ci)/2)))
     rmfd_irf <- sapply(1:3, function(x) rmfd_irf[x,,,] %>% finalize_irf(shock_size = df$shock_ix[2],
                                                                         norm_id = c(df$int_ix[df$shock_ix[1]],
                                                                                     df$shock_ix[1]),
