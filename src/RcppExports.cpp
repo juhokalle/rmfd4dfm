@@ -9,6 +9,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // kfks_cpp
 Rcpp::List kfks_cpp(const arma::mat& A, const arma::mat& C, const arma::mat& R, const arma::mat& Q, const arma::mat& data_wide, const arma::mat& P1, double dim_state, bool only_ll);
 RcppExport SEXP _rmfd4dfm_kfks_cpp(SEXP ASEXP, SEXP CSEXP, SEXP RSEXP, SEXP QSEXP, SEXP data_wideSEXP, SEXP P1SEXP, SEXP dim_stateSEXP, SEXP only_llSEXP) {
