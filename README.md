@@ -344,14 +344,13 @@ int_ix <- sapply(int_vars_fred, function(x) which(names(FRED_heavy$df)==x))
 # re-organize data matrix s.t. the variables of interest are ordered first
 perm_ix <- c(int_ix, (1:ncol(FRED_heavy$df))[-int_ix])
 FRED_heavy$df <- FRED_heavy$df[,perm_ix]
+FRED_heavy$trans_ix <- FRED_heavy$trans_ix[perm_ix]
 FRED_heavy$int_ix <- 1:4
 ```
 
 Second, we need to determine the static factor dimension. This is needed
-for determining the maximum lag
-![s](https://latex.codecogs.com/png.latex?s "s") and
-![p](https://latex.codecogs.com/png.latex?p "p") in eqs. (1)–(2), while
-in the “static” method it defines the dimension of
+for an estimate of the lag structure in eqs. (1)–(2), while in the
+“static” method it defines the dimension of
 ![z_t](https://latex.codecogs.com/png.latex?z_t "z_t"). To this end, we
 use functions `baingcriterion` and `abc_crit`, which implement the tests
 developed in [Bai and Ng
