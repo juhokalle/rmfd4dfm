@@ -319,30 +319,42 @@ which guards against the omitted variable bias, to which the SVAR
 methods can be more susceptible.
 
 The following code snippets show how to replicate the results given in
-the empirical section of our paper. First, we include an index vector
-coding the columns corresponding to the variables of interest in the
-structural analysis in the data object. In the structural analysis with
-recursive identification, the ordering is important, as it determines
-the short-run restrictions imposed on the structural impact multiplier
-matrix. (For a brief and to the point summary of the structural
-identification using DFMs, see [Section
+the empirical section of our paper. First, we order the variables of
+interest in the structural analysis variables first in the data matrix,
+i.e. industrial production (INDPRO, the mnemonic in [McCracken and Ng,
+2015](https://s3.amazonaws.com/real.stlouisfed.org/wp/2015/2015-012.pdf)),
+consumer price index (CPIAUCSL), federal funds rate (FEDFUNDS), and real
+Swiss/US exchange rate (EXSZUSx), in this order. In the structural
+analysis with recursive identification, the ordering is important, as it
+determines the short-run restrictions imposed on the structural impact
+multiplier matrix. (For a brief and to the point summary of the
+structural identification using DFMs, see [Section
 9](http://www.barigozzi.eu/MB_DF_lecture_notes_online.pdf#page=58) of
 the lecture notes written by [Matteo
-Barigozzi](http://www.barigozzi.eu/Home.html).)
+Barigozzi](http://www.barigozzi.eu/Home.html).) Additionally, one must
+include a vector `int_ix` in the data object `FRED_heavy` coding the
+positions of the variables of interest, which in this case is simply a
+sequence `1:4`.
 
 ``` r
-pkgs <- library("gridExtra") # for nice plots
+library("rmfd4dfm")
 # code the positions of the variables of interest
 int_vars_fred <- c("INDPRO", "CPIAUCSL", "FEDFUNDS", "EXSZUSx")
-FRED_heavy$int_ix <- sapply(int_vars_fred, function(x) which(names(FRED_heavy$df)==x))
+int_ix <- sapply(int_vars_fred, function(x) which(names(FRED_heavy$df)==x))
+# re-organize data matrix s.t. the variables of interest are ordered first
+perm_ix <- c(int_ix, (1:ncol(FRED_heavy$df))[-int_ix])
+FRED_heavy$df <- FRED_heavy$df[,perm_ix]
+FRED_heavy$int_ix <- 1:4
 ```
 
 Second, we need to determine the static factor dimension. This is needed
-for the determining the state dimension in the state space
-representation of eqs. (1)–(2), while in the “static” method it defines
-the dimension of ![z_t](https://latex.codecogs.com/png.latex?z_t "z_t").
-To this end, we use functions `baingcriterion` and `abc_crit`, which
-implement the tests developed in [Bai and Ng
+for determining the maximum lag
+![s](https://latex.codecogs.com/png.latex?s "s") and
+![p](https://latex.codecogs.com/png.latex?p "p") in eqs. (1)–(2), while
+in the “static” method it defines the dimension of
+![z_t](https://latex.codecogs.com/png.latex?z_t "z_t"). To this end, we
+use functions `baingcriterion` and `abc_crit`, which implement the tests
+developed in [Bai and Ng
 (2002)](https://www.ssc.wisc.edu/~bhansen/718/BaiNg2002.pdf) and
 [Alessi, Barigozzi and Capasso
 (2009)](https://dipot.ulb.ac.be/dspace/bitstream/2013/54139/1/RePEc_eca_wpaper_2009_023.pdf),
@@ -419,5 +431,5 @@ figure, which can then be exported to pdf, for example, we use
 p1 <- plot_irfs(est_obj$irf, int_vars_fred, "D-DFM")
 p2 <- plot_irfs(est_fglr$irf, int_vars_fred, "S-DFM", label_y = FALSE)
 p3 <- plot_irfs(svar_irf, int_vars_fred, "SVAR", label_y = FALSE)
-plot1 <- marrangeGrob(c(p1,p2,p3), nrow = 4, ncol = 3, top = NULL)
+plot1 <- gridExtra::marrangeGrob(c(p1,p2,p3), nrow = 4, ncol = 3, top = NULL)
 ```
