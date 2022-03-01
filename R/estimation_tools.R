@@ -301,9 +301,9 @@ chol_ident <- function(est_obj, int_vars, est_type = c("rmfd", "fglr")){
     chol_mat <- t(chol(sigma[1:dim_in,1:dim_in]))
     chol_irf <- irf_x(est_obj$irf, post_mat = solve(d0)%*%chol_mat)
   } else {
-    b0 <- est_obj$dfm_irf %>% unclass %>% .[int_vars,,1]
+    b0 <- est_obj %>% unclass %>% .[int_vars,,1]
     C <- b0 %>% tcrossprod() %>% chol %>% t
-    chol_irf <- irf_x(est_obj$dfm_irf, post_mat = solve(b0)%*%C)
+    chol_irf <- irf_x(est_obj, post_mat = solve(b0)%*%C)
   }
 
   return(chol_irf)

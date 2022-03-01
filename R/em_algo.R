@@ -45,7 +45,7 @@ update_em2 = function(params_deep_init, sigma_init,
     ll_new = out_e$loglik
     if(!is.finite(ll_new)) stop("\nUnstable system, estimation stopped at ", iter, ". iteration.")
     delta_loglik = abs(ll_new - ll_this)
-    avg_ll = 0.5*(abs(ll_new + ll_this) + 1e-6)
+    avg_ll = 0.5*(abs(ll_new + ll_this) + 1e-6) # avoid 0/0 by '+ 1e-6'
     diff_ll = delta_loglik / avg_ll
     ll_this <- ll_new
 
@@ -54,12 +54,12 @@ update_em2 = function(params_deep_init, sigma_init,
     if(VERBOSE){
       if(flag_converged){
         cat("\nThe EM algorithm converged after ", iter, " iterations.\n", sep ="")
+      } else if(iter==MAXIT){
+        cat("\n Maximum no. iterations reached.")
       } else if(iter==1){
         cat("estimation ongoing.")
       } else if(iter%%50==0){
         cat("\nestimation ongoing")
-      } else if(iter==MAXIT){
-        cat("\n Maximum no. iterations reached.")
       } else{
         cat(".")
       }

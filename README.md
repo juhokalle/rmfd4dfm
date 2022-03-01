@@ -402,7 +402,7 @@ est_obj <- do_everything_rmfd(df = FRED_heavy,
                               h = 50,
                               nrep = 500,
                               conv_crit = 1e-5,
-                              ci = 0.8,
+                              ci = 0.68,
                               init_rep = 1,
                               verbose = TRUE)
 # S-DFM
@@ -411,14 +411,14 @@ est_fglr <- do_everything_fglr(df = FRED_heavy,
                                k = 2,
                                h = 50,
                                nrep = 500,
-                               ci = 0.8)
+                               ci = 0.68)
 
 # SVAR
 svar_irf <- do_everything_svar(df = FRED_heavy,
                                p = 9,
                                nrep = 500,
                                h = 50,
-                               ci = 0.8)
+                               ci = 0.68)
 ```
 
 Finally, the `plot_irfs` function returns the IRFs along with the
@@ -428,7 +428,7 @@ figure, which can then be exported to pdf, for example, we use
 
 ``` r
 p1 <- plot_irfs(est_obj$irf, int_vars_fred, "D-DFM")
-p2 <- plot_irfs(est_fglr$irf, int_vars_fred, "S-DFM", label_y = FALSE)
+p2 <- plot_irfs(est_fglr, int_vars_fred, "S-DFM", label_y = FALSE)
 p3 <- plot_irfs(svar_irf, int_vars_fred, "SVAR", label_y = FALSE)
 plot1 <- gridExtra::marrangeGrob(c(p1,p2,p3), nrow = 4, ncol = 3, top = NULL)
 ```
