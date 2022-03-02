@@ -45,8 +45,8 @@ Here I will provide a brief and hopefully accessible introduction to the
 modelling approach presented in the paper, while the details are
 available from the paper. The aim is to identify and estimate
 impulse-response functions (IRFs) using dynamic factor models (DFMs),
-with the emphasis placed on macroeconomic applications and and analysis.
-The model of interest is given as
+with the emphasis placed on macroeconomic applications and analysis. The
+model of interest is given as
 
 ![
  (1): \\quad x\_{t} =d\_{0}z\_{t}^{\*}+d\_{1}z\_{t-1}^{\*}+\\cdots+d\_{s}z\_{t-s}^{\*}+\\xi\_{t}
@@ -85,10 +85,9 @@ where
     ![z_t^\*](https://latex.codecogs.com/png.latex?z_t%5E%2A "z_t^*"),
     with
     ![\\mathbb E(\\varepsilon_t \\varepsilon_t')=\\Sigma\_\\varepsilon](https://latex.codecogs.com/png.latex?%5Cmathbb%20E%28%5Cvarepsilon_t%20%5Cvarepsilon_t%27%29%3D%5CSigma_%5Cvarepsilon "\mathbb E(\varepsilon_t \varepsilon_t')=\Sigma_\varepsilon").
--   ![d_i](https://latex.codecogs.com/png.latex?d_i "d_i") and
-    ![c_j](https://latex.codecogs.com/png.latex?c_j "c_j"),
-    ![i=0,\\ldots,s](https://latex.codecogs.com/png.latex?i%3D0%2C%5Cldots%2Cs "i=0,\ldots,s"),
-    ![j=1,\\ldots,p](https://latex.codecogs.com/png.latex?j%3D1%2C%5Cldots%2Cp "j=1,\ldots,p"),
+-   ![\\{d_i\\}\_{i=0}^s](https://latex.codecogs.com/png.latex?%5C%7Bd_i%5C%7D_%7Bi%3D0%7D%5Es "\{d_i\}_{i=0}^s")
+    and
+    ![\\{c_j\\}\_{i=1}^p](https://latex.codecogs.com/png.latex?%5C%7Bc_j%5C%7D_%7Bi%3D1%7D%5Ep "\{c_j\}_{i=1}^p")
     are
     ![n \\times q](https://latex.codecogs.com/png.latex?n%20%5Ctimes%20q "n \times q")
     and

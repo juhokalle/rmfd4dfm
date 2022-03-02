@@ -46,7 +46,7 @@ devtools::install_github("juhokalle/rmfd4dfm")
 ## The Model and Argument
 
 Here I will provide a brief and hopefully accessible introduction to the modelling approach presented in the paper, while the details are available from the paper.
-The aim is to identify and estimate impulse-response functions (IRFs) using dynamic factor models (DFMs), with the emphasis placed on macroeconomic applications and and analysis.
+The aim is to identify and estimate impulse-response functions (IRFs) using dynamic factor models (DFMs), with the emphasis placed on macroeconomic applications and analysis.
 The model of interest is given as 
 
 $$
@@ -65,7 +65,7 @@ where
 * $z_t^*$ is a $q$-dimensional dynamic factor process, with usually $q<10$.
 * $x_t$ is an $n$-dimensional idiosyncratic term, we assume $\mathbb E(\xi_t \xi_t')=\sigma_\xi^2I_n$.
 * $\varepsilon_t$ is the innovation to $z_t^*$, with $\mathbb E(\varepsilon_t \varepsilon_t')=\Sigma_\varepsilon$.
-* $d_i$ and $c_j$, $i=0,\ldots,s$, $j=1,\ldots,p$, are $n \times q$ and $q \times q$ parameter matrices, values of which are at the center of interest as the IRFs are constructed from these matrices.
+* $\{d_i\}_{i=0}^s$ and $\{c_j\}_{i=1}^p$ are $n \times q$ and $q \times q$ parameter matrices, values of which are at the center of interest as the IRFs are constructed from these matrices.
 * $u_t$ is the $q$-dimensional structural shock process, with $\mathbb E (u_t u_t') = I_q$.
 * $H$ is $(q\times q)$-dimensional structural impact multiplier matrix, which we identify as $H=chol(\Sigma_\varepsilon)$, where $chol(\Sigma_\varepsilon)$ is the lower triangular Cholesky factor of $\Sigma_\varepsilon$. Note that any other identification method for uncovering $H$ is valid as in the structural vector autoregression (SVAR) analysis.
 

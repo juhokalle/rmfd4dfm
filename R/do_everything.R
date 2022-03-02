@@ -288,7 +288,7 @@ do_everything_svar <- function(df, k, nrep = 500, h = 50, ci = 0.68){
   # fix the shock of interest and the normalization
   if(is.null(df$shock_ix)) df$shock_ix <- c(3, 0.5)
   # pre-allocate
-  irf_arr <- array(0, dim = c(q, q, h+1, nrep))
+  irf_arr <- array(0, dim = c(h+1, q, nrep))
   # obtain first the bootstrap sample and subsequently the point estimates
   for(j in 1:nrep){
     var_boot <- est_ar(obj = X_boot(df$df[,df$int_ix], 52),
@@ -296,18 +296,20 @@ do_everything_svar <- function(df, k, nrep = 500, h = 50, ci = 0.68){
                        method = "ols",
                        ic = "max",
                        mean_estimate = 'intercept')
-    irf_arr[, , ,j] <- var_boot$model$sys %>%
+    irf_arr[, , j] <- var_boot$model$sys %>%
       pseries(lag.max = h) %>%
       unclass() %>%
-      irf_x(post_mat = var_boot$model$sigma_L)
+      irf_x(post_mat = var_boot$model$sigma_L) %>%
+      finalize_irf(shock_size = df$shock_ix[2],
+                   norm_id = rep(df$shock_ix[1],2),
+                   trans_ix = df$trans_ix[df$int_ix],
+                   int_vars = 1:q)
   }
 
-  svar_irf <- apply(irf_arr, c(1,2,3), function(x) stats::quantile(x, probs = c((1-ci)/2, .5, 1-(1-ci)/2)))
-  svar_irf <- sapply(1:3, function(x) svar_irf[x,,,] %>% finalize_irf(shock_size = df$shock_ix[2],
-                                                                      norm_id = rep(df$shock_ix[1],2),
-                                                                      trans_ix = df$trans_ix[df$int_ix],
-                                                                      int_vars = 1:q),
-                     simplify = "array") %>% aperm(c(1,3,2))
+  svar_irf <- apply(irf_arr, c(1,2),
+                    function(x) stats::quantile(x, probs = c((1-ci)/2, .5, 1-(1-ci)/2))) %>%
+    aperm(perm = c(2,1,3))
+
   # add point estimates to the IRF array
   var_point <- est_ar(obj = df$df[,df$int_ix],
                       p.max = k,
