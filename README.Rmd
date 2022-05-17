@@ -117,7 +117,7 @@ where $A(L)$ is an $r \times r$ VAR lag polynomial of order $k$, and $B$ is an $
 After the estimation of $D$ and $A(L)$, the IRF $k(L)=DA(L)^{-1}B$ can be constructed straightforwardly.
 
 This alternative using PCs is straightforward from an estimation point of view, but let us point two associated restrictive features.
-First, note that the minimal number of identifying restrictions needed is $r=q(s+1)$, which is higher than that of in our parametrization, i.e. $q$, whenever $s>0$
+First, note that the minimal number of identifying restrictions needed is $r^2=q^2(s+1)^2$, which is higher than that of in our parametrization, i.e. $q^2$, whenever $s>0$
 [(Bai and Wang, 2012)](https://mpra.ub.uni-muenchen.de/38434/2/MPRA_paper_38434.pdf).
 Second, we note that the reliable estimation of VAR on $z_t$ can be difficult if the lag order is misspecified, which is due to the singularity of the covariance matrix of the innovation to $z_t$, i.e.
 $\mathbb E (B\varepsilon_t \varepsilon_t'B')=B\Sigma_\varepsilon B'$ has rank $q$, which is smaller than $r=(s+1)q$ if $s>0$
