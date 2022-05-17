@@ -266,9 +266,9 @@ can be constructed straightforwardly.
 This alternative using PCs is straightforward from an estimation point
 of view, but let us point two associated restrictive features. First,
 note that the minimal number of identifying restrictions needed is
-![r=q(s+1)](https://latex.codecogs.com/png.latex?r%3Dq%28s%2B1%29 "r=q(s+1)"),
+![r^2=q^2(s+1)^2](https://latex.codecogs.com/png.latex?r%3Dq%28s%2B1%29 "r^2=q^2(s+1)^2"),
 which is higher than that of in our parametrization,
-i.e. ![q](https://latex.codecogs.com/png.latex?q "q"), whenever
+i.e. ![q^2](https://latex.codecogs.com/png.latex?q "q^2"), whenever
 ![s>0](https://latex.codecogs.com/png.latex?s%3E0 "s>0") [(Bai and Wang,
 2012)](https://mpra.ub.uni-muenchen.de/38434/2/MPRA_paper_38434.pdf).
 Second, we note that the reliable estimation of VAR on
