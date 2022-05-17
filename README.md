@@ -9,8 +9,8 @@ New Parametrization
 
 This repository contains the associated R-package and data to the paper
 [Estimation of Impulse-Response Functions with Dynamic Factor Models: A
-New Parametrization](https://arxiv.org/pdf/2202.00310) authored by Juho
-Koistinen and [Bernd
+New Parametrization](https://arxiv.org/pdf/2202.00310) authored by [Juho
+Koistinen](https://juhokois.netlify.app/) and [Bernd
 Funovits](https://sites.google.com/site/berndfunovits/) (2022).
 Specifically, the functions within the package allow the user to
 estimate a structural dynamic factor model (DFM), with the common
