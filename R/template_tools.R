@@ -59,10 +59,13 @@ tmpl_rmfd_echelon_ss = function(dim_out, nu, degs = NULL) {
     row_ix <- ((m-jj)*dim_in+1):((m+1-jj)*dim_in) # c[i] stored in reverse order
     ix <- (1+(jj-1)*dim_out):(jj*dim_out)
     C[,col_ix] <- d_ech[ix,]
+    # commented out 10/5/2024
     if(jj>1 || deg_c > deg_d){
       # skip c[0] and fix it into C after loop
       if(deg_c > deg_d) A[,col_ix] <- c_ech[row_ix,] else A[,col_ix-dim_in] <- c_ech[row_ix,]
     }
+    # commented in 10/5/2024
+    # A[,col_ix] <- c_ech[row_ix,]
   }
 
   # c[0] = d[0][1:dim_in,1:dim_in]
@@ -70,10 +73,16 @@ tmpl_rmfd_echelon_ss = function(dim_out, nu, degs = NULL) {
   A <- rbind(A, diag(1, nrow = (m-1)*dim_in, ncol = m*dim_in))
   B = cbind(diag(x = 1, nrow = m * dim_in, ncol = dim_in),
             matrix(0, nrow = m * dim_in, ncol = dim_out-dim_in))
+  # put here the check for the zero column index
+  j0 <- apply(C, 2, function(x) all(x%in%0))
+  C <- C[, !j0]
+  A <- A[!j0, !j0]
+  B <- B[!j0,]
   D = diag(dim_out)
   ABCD <- cbind(rbind(A, C), rbind(B, D))
   sys = structure(ABCD,
-                  order = c(dim_out, dim_out, dim_in*m), class = c('stsp','ratm'))
+                  order = c(dim_out, dim_out, ncol(C)),
+                  class = c('stsp','ratm'))
 
   # create a helper model
   model = list(sys = sys, sigma_L = diag(dim_out), names = NULL, label = NULL)
@@ -81,27 +90,29 @@ tmpl_rmfd_echelon_ss = function(dim_out, nu, degs = NULL) {
   tmpl <- model2template(model)
 
   # change Sigma to \sigma^2*I_n
-  ix <- (length(ABCD)+1):(length(ABCD)+dim_out^2)
-  tmpl$H <- bdiag(tmpl$H[-ix, ], matrix(diag(dim_out), nrow = dim_out^2, ncol = 1))
+  ix         <- (length(ABCD)+1):(length(ABCD)+dim_out^2)
+  tmpl$H     <- Matrix::bdiag(tmpl$H[-ix, ], matrix(diag(dim_out), nrow = dim_out^2, ncol = 1))
+  tmpl$xpx   <- Matrix::crossprod(tmpl$H)
+  tmpl$h     <- Matrix::Matrix(tmpl$h, sparse = TRUE)
   tmpl$h[ix] <- 0
   tmpl$n.par <- tmpl$n.par + 1
 
   # Affine transformation: A
-  h_A = as.vector(A)
-  ix = which(!is.finite(h_A))
-  h_A[ix] = 0
-  n_A = length(ix)
+  h_A     <- as.vector(A)
+  ix      <- which(!is.finite(h_A))
+  h_A[ix] <- 0
+  n_A     <- length(ix)
 
-  H_A = matrix(0, nrow = length(h_A), ncol = n_A)
-  H_A[ix,] = diag(n_A)
+  H_A      <- matrix(0, nrow = length(h_A), ncol = n_A)
+  H_A[ix,] <- diag(n_A)
 
   # Affine transformation: C
-  h_C <- as.vector(C)
-  ix <- which(!is.finite(h_C))
+  h_C     <- as.vector(C)
+  ix      <- which(!is.finite(h_C))
   h_C[ix] <- 0
-  n_C <- length(ix)
+  n_C     <- length(ix)
 
-  H_C <- matrix(0, nrow = length(h_C), ncol = n_C)
+  H_C      <- Matrix::Matrix(0, nrow = length(h_C), ncol = n_C, sparse = TRUE)
   H_C[ix,] <- diag(n_C)
 
   return(list(A = list(H_A = H_A,
@@ -123,7 +134,7 @@ tmpl_rmfd_echelon_ss = function(dim_out, nu, degs = NULL) {
 #' where state and output dimensions are denoted by \eqn{r} and \eqn{n}.
 #'
 #' @keywords internal
-rmfd2stsp = function(rmfdsys, nu){
+rmfd2stsp = function(rmfdsys, nu, return_all = FALSE){
 
   # Extract integer valued parameters
   dim_out = attr(rmfdsys, "order")[1]
@@ -131,7 +142,7 @@ rmfd2stsp = function(rmfdsys, nu){
   deg_c = attr(rmfdsys, "order")[3]
   deg_d = attr(rmfdsys, "order")[4]
   if(!max(deg_c,deg_d)==max(nu)) stop("Polynomial degrees not compatible with the Kronecker indices")
-  m = max(nu, deg_d+1)
+  m = max(nu, deg_d+1) # dim_in + sum(nu)
 
   # stsp matrices
   if(deg_d>=deg_c){
@@ -148,11 +159,26 @@ rmfd2stsp = function(rmfdsys, nu){
 
   B = cbind(diag(x = 1, ncol = dim_in, nrow = m * dim_in),
             matrix(0, ncol = dim_out-dim_in, nrow = m * dim_in))
+  # put here the check for the zero column index
+  j0 <- apply(C, 2, function(x) all(x%in%0))
+  C <- C[, !j0]
+  A <- A[!j0, !j0]
+  B <- B[!j0,]
+
   D = diag(dim_out)
 
   ABCD = cbind(rbind(A,C), rbind(B,D))
 
-  return(ABCD)
+  if(return_all){
+    out <- list(ABCD = ABCD,
+                A    = A,
+                B    = B,
+                C    = C,
+                D    = D)
+  } else{
+    out <- ABCD
+  }
+  return(out)
 }
 
 #' @title Obtain RMFD object from a state space system
@@ -173,19 +199,29 @@ stsp2rmfd = function(stspsys, dim_out, nu, degs = NULL){
   dim_in = length(nu)
   deg_c <- degs[1]
   deg_d <- degs[2]
-  m = max(nu,deg_d+1)
+  m = max(nu, deg_d+1)
   dim_state <- m*dim_in
+  basis <- nu2basis(nu)
   # get polynomial matrices c(z) and d(z) by arraying stsp matrices A and C
-  deep_C <- stspsys %>% unclass %>% .[1:dim_in, 1:(dim_in*deg_c)]
-  polm_C <- c(diag(dim_in), -deep_C) %>%
-    array(dim=c(dim_in,dim_in,deg_c+1)) %>%
-    polm()
-  deep_D <- stspsys %>%
-    unclass %>%
-    .[(dim_state+1):(dim_out+dim_state), 1:(dim_in*(deg_d+1))] %>% c()
-  polm_D <- deep_D %>% array(dim=c(dim_out, dim_in, deg_d+1)) %>% polm()
+  # modified on 10/5/2024
+  # ------------ #
+  deep_C <- matrix(0, dim_in, dim_in*deg_c)
+  deep_C[, basis] <- stspsys$A[1:dim_in,basis]
+  # deep_C <- stspsys$A[1:dim_in, 1:(dim_in*deg_c)]
+  polm_C <- array(c(diag(dim_in), -deep_C),
+                  dim=c(dim_in,dim_in,deg_c+1))
+  deep_D <- matrix(0, dim_out, dim_in*(deg_d+1))
+  deep_D[,c(1:dim_in, basis+dim_in)] <- stspsys$C
+  polm_D <- array(c(deep_D), dim=c(dim_out, dim_in, deg_d+1))
+  # ------------ #
+  # polm_C <- c(stspsys$A[1:dim_in,]) %>%
+  #   array(dim = c(dim_in, dim_in, deg_c + 1)) %>%
+  #   polm()
+  # polm_D <- c(stspsys$C) %>%
+  #   array(dim = c(dim_out, dim_in, deg_d+1)) %>%
+  #   polm()
   # make sure d[0][1:dim_in, 1:dim_in]=c[0]
   d_0 <- polm_D %>% unclass %>% .[1:dim_in,1:dim_in,1]
-  rmfd_out <- rmfd(d_0%r%polm_C, polm_D)
+  rmfd_out <- rmfd(d_0%r%polm(polm_C), polm(polm_D))
   return(rmfd_out)
 }

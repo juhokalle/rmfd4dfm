@@ -2556,6 +2556,70 @@ model2template = function(model, sigma_L = c("as_given", "chol", "symm", "identi
               order = order, n.par = ncol(H)))
 }
 
+tmpl_rmfd_echelon = function(nu, m = length(nu), sigma_L = c("chol", "symm", "identity", "full_normalized")) {
+
+  # (m,n) transfer function k = d(z) c^(-1)(z) with degrees deg(c) = p, deg(d) = q
+  sigma_L = match.arg(sigma_L)
+  nu = as.integer(nu)
+  n = length(nu)
+  if ( (n < 1) || (m < 1) ) stop('illegal dimension, (m,n) must be positive')
+  if (min(nu) < 0) stop('Kronecker indices must be non negative')
+
+  p = max(nu)
+  order = c(m, n, p, p)
+
+  # code the position of the basis columns of the Hankel matrix
+  basis = rationalmatrices::nu2basis(nu)
+
+  # coefficients of c(z) in reverse order!!!
+  # c = [c[p]',...,c[0]']'
+  c = matrix(0, nrow = n*(p+1), ncol = n)
+  # d = [d[0]',...,d[p]']'
+  d = matrix(0, nrow = m*(p+1), ncol = n)
+
+  # code free entries with NA's
+  for (i in (1:n)) {
+    shift = (p-nu[i])*n
+    k = nu[i]*n + i
+    basis_i = basis[basis < k]
+    # cat(i, shift, k, basis_i, '\n')
+    c[k + shift, i] = 1
+    c[basis_i + shift, i] = NA_real_
+    d[iseq(m + 1, (nu[i] + 1)*m), i] = NA_real_   # i-th column has degree nu[i]
+    d[iseq(n + 1, m), i] = NA_real_               # the last (m-n) rows of b[0] are free
+  }
+  # print(c)
+  # reshuffle c -> c = [c[0]',...,c[p]']'
+  dim(c) = c(n, p+1, n)
+  c = c[, (p+1):1, , drop = FALSE]
+  dim(c) = c(n*(p+1), n)
+
+  # print(rbind(c, d))
+
+  sL = matrix(NA_real_, nrow = n, ncol = n)
+
+  # create a helper model
+  sys = structure(rbind(c, d), order = order, class = c('rmfd','ratm'))
+  model = list(sys = sys, sigma_L = sL, names = NULL, label = NULL)
+  model = structure(model, class = c('rmfdmod', 'rldm'))
+  # print(model$sys)
+
+  # create template
+  tmpl = model2template(model, sigma_L = sigma_L)
+  # add Kronecker indices
+  tmpl$nu = nu
+
+  # the first min(n,m) rows of d[0] and c[0] are equal!
+  # matrix of linear indices
+  i = matrix(1:((n+m)*(p+1)*n), nrow = (n+m)*(p+1), ncol = n)
+  ic = as.vector(i[1:min(n,m), 1:n])
+  id = as.vector(i[(n*(p+1)+1):(n*(p+1)+min(n,m)), 1:n])
+  # print(rbind(ia,ib))
+  tmpl$h[id] = tmpl$h[ic]
+  tmpl$H[id, ] = tmpl$H[ic, ]
+
+  return(tmpl)
+}
 
 tmpl_arma_pq = function(m, n, p, q, sigma_L = c("chol", "symm", "identity", "full_normalized")) {
 

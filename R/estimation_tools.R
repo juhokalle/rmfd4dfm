@@ -150,61 +150,85 @@ DfmRawImp <- function(X, q, r, k, h){
 #'        lty=c(1,0), pch=c(NA, 1), col=c("red3", "black"))
 #' # reset graphical parameters to default
 #' par(new = FALSE, mar = opar)}
-estim_wrap <- function(df, nu, degs = NULL,
-                       maxit = 250, conv_crit = 1e-3,
-                       init0 = 1,
-                       verbose = TRUE, h = 50){
+estim_wrap <- function(df,
+                       nu,
+                       degs      = NULL,
+                       maxit     = 250,
+                       conv_crit = 1e-3,
+                       init0     = 1,
+                       verbose   = TRUE,
+                       h         = 50){
 
-  df <- as.matrix(df)
+  df   <- as.matrix(df)
   nobs <- dim(df)[1] # time series dim
   nvar <- dim(df)[2] # cross-section dim
   if(is.null(degs)) degs <- rep(max(nu), 2)
   if(max(degs)!=max(nu)) stop("Polynomial degrees not compatible with the Kronecker indices")
   # scale data and save the standard deviations s.t. they can be multiplied to final IRFs
+  mu_vec <- tcrossprod(rep(1, nobs), colMeans(df))
   sd_vec <- apply(df, 2, stats::sd)
-  mu <- outer(rep(1, nobs), colMeans(df))
-  df <- (df-mu)%*%diag(sd_vec^-1)
-  # create the model template
+  df     <- (df - mu_vec)%*%diag(sd_vec^-1)
+  # create the model templates; latter for creating RMFD model
   tmpl_ss <- tmpl_rmfd_echelon_ss(dim_out = nvar,
-                                  nu = nu,
-                                  degs = degs)
-  # save this large matrix for the extraction of deep prms
-  # such that no need to calculate it in every iteration
-  tmpl_ss$tmpl$xpx <- crossprod(tmpl_ss$tmpl$H)
+                                  nu      = nu,
+                                  degs    = degs)
   # initial values
   if(is.list(init0)){
     # this is for supplied initial values
+    params0         <- list()
     params0$params0 <- init0$params0
-    params0$sigma <- init0$sigma
-  } else {
-    params0 <- boot_init(data = df,
-                         nu = nu,
-                         degs = degs,
+    params0$sigma   <- init0$sigma
+  } else if(init0 == "rdm"){
+    params0         <- list()
+    params0$params0 <- runif(tmpl_ss$tmpl$n.par, -.1, .1)
+    params0$sigma   <- diag(length(nu))
+  } else if(is.double(init0)){
+    params0 <- boot_init(data     = df,
+                         nu       = nu,
+                         degs     = degs,
                          tmpl_mod = tmpl_ss,
-                         nrep = init0)
+                         nrep     = init0)
+    if(!is.finite(params0$llval)){
+      params0$params0 <- runif(tmpl_ss$tmpl$n.par, -.1, .1)
+      params0$sigma   <- diag(length(nu))
+    }
+  } else{
+    stop("Provide appropriate value for the argument 'init0'")
   }
 
   # estimation
   rmfd_em <- update_em2(params_deep_init = params0$params0,
-                        sigma_init = params0$sigma,
-                        data_wide = t(df),
-                        tmpl_ss = tmpl_ss,
-                        MAXIT = maxit,
-                        VERBOSE = verbose,
-                        conv_crit = conv_crit)
+                        sigma_init       = params0$sigma,
+                        data_wide        = t(df),
+                        tmpl_ss          = tmpl_ss,
+                        MAXIT            = maxit,
+                        VERBOSE          = verbose,
+                        conv_crit        = conv_crit)
+  rmfd_em$nu      <- nu
 
   # calculate model selection criteria
-  rmfd_em$npar <- length(params0$params0)-1 # consider only system parameters
-  pen <- rmfd_em$npar/nobs
-  rmfd_em$aic <- -2*rmfd_em$ll_val + 2*pen
-  rmfd_em$bic <- -2*rmfd_em$ll_val + log(nobs)*pen
-  rmfd_em$hqic <- -2*rmfd_em$ll_val + 2*log(log(nobs))*pen
+  rmfd_em$npar <- length(rmfd_em$theta0)-1 # consider only system parameters
+  e            <- (nvar + nobs)/(nvar*nobs)
+  rmfd_em$IC1  <- -rmfd_em$ll_val + sum(nu)*e*log(1/e)
+  rmfd_em$IC2  <- -rmfd_em$ll_val + sum(nu)*e*log(min(nvar,nobs))
+  rmfd_em$IC3  <- -rmfd_em$ll_val + sum(nu)*(log(min(nvar,nobs))/min(nvar,nobs))
+
+  # pen <- rmfd_em$npar/nobs
+  # rmfd_em$aic  <- -2*rmfd_em$ll_val + 2*pen
+  # rmfd_em$bic  <- -2*rmfd_em$ll_val + log(nobs)*pen
+  # rmfd_em$hqic <- -2*rmfd_em$ll_val + 2*log(log(nobs))*pen
 
   # transform the resulting stsp system into RMFD model
-  rmfd_em$rmfd_final <- stsp2rmfd(stspsys =  rmfd_em$ssm_final$sys,
-                                  dim_out = nvar,
-                                  nu = nu,
-                                  degs = degs)
+ rmfd_em$rmfd_final <- stsp2rmfd(stspsys = rmfd_em$ssm_final$sys,
+                                 dim_out = nvar,
+                                 nu      = nu,
+                                 degs    = degs)
+  # rmfd0 <- fill_template(th       = rmfd_em$theta0[1:rmfd_em$npar],
+  #                        template = tmpl_rmfd)$sys
+  # polm_c <- unclass(rmfd0$c)
+  # polm_c[,,-1] <- -polm_c[,,-1]
+  # rmfd_em$rmfd_final <- rmfd(polm_c, rmfd0$d)
+
   rmfd_em <- rmfd_em[-1] # drop the redundant element from the output list
 
   # raw IRFs

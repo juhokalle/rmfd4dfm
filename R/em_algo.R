@@ -11,9 +11,13 @@
 #' @param VERBOSE boolean, print estimation progress?
 #'
 #' @keywords internal
-update_em2 = function(params_deep_init, sigma_init,
-                      data_wide, tmpl_ss,
-                      MAXIT = 100, VERBOSE = FALSE, conv_crit = 1e-2){
+update_em2 = function(params_deep_init,
+                      sigma_init,
+                      data_wide,
+                      tmpl_ss,
+                      MAXIT = 100,
+                      VERBOSE = FALSE,
+                      conv_crit = 1e-2){
 
   dim_in <- dim(sigma_init)[1]
 
@@ -21,8 +25,8 @@ update_em2 = function(params_deep_init, sigma_init,
   model_this = fill_template(params_deep_init, tmpl_ss$tmpl)
 
   # Start with E-Step and exit if unstable
-  out_e = smoothed_moments8(stsp_mod = model_this,
-                            Sigma = sigma_init,
+  out_e = smoothed_moments8(stsp_mod  = model_this,
+                            Sigma     = sigma_init,
                             data_wide = data_wide)
   ll_this <- out_e$loglik
   if(!is.finite(ll_this)) stop("\nInitial estimation results in unstable system, the algorithm stops.")
@@ -30,51 +34,58 @@ update_em2 = function(params_deep_init, sigma_init,
   # Prepare while loop
   flag_converged = FALSE
   iter = 1
-  conv_stat <- vector("list")
+  conv_stat <- list(ll_value = rep(NA, MAXIT),
+                    conv_cr  = rep(NA, MAXIT))
 
-  while(!flag_converged && iter<MAXIT){
+  while(!flag_converged && iter<=MAXIT){
+
+    # AEM step would go here...
 
     # M-step
     out_m <- max_step(out_smooth = out_e, tmpl_ss = tmpl_ss)
 
+    # ...or here?
+
     # E-step
-    out_e = smoothed_moments8(stsp_mod = out_m$model_new,
-                              Sigma = out_e$Q[1:dim_in,1:dim_in],
+    out_e = smoothed_moments8(stsp_mod  = out_m$model_new,
+                              Sigma     = out_e$Q[1:dim_in,1:dim_in],
                               data_wide = data_wide)
     # check convergence
     ll_new = out_e$loglik
     if(!is.finite(ll_new)) stop("\nUnstable system, estimation stopped at ", iter, ". iteration.")
-    delta_loglik = abs(ll_new - ll_this)
-    avg_ll = 0.5*(abs(ll_new + ll_this) + 1e-6) # avoid 0/0 by '+ 1e-6'
-    diff_ll = delta_loglik / avg_ll
-    ll_this <- ll_new
+    delta_loglik <- abs(ll_new - ll_this)
+    avg_ll       <- 0.5*(abs(ll_new) + abs(ll_this) + 1e-6) # avoid 0/0 by '+ 1e-6'
+    diff_ll      <- delta_loglik / avg_ll
+    ll_this      <- ll_new
 
     if(diff_ll < conv_crit) flag_converged = TRUE
 
     if(VERBOSE){
       if(flag_converged){
-        cat("\nThe EM algorithm converged after ", iter, " iterations.\n", sep ="")
+        cat("\nThe EM algorithm converged after", iter, "iterations.\n", sep =" ")
       } else if(iter==MAXIT){
         cat("\n Maximum no. iterations reached.")
       } else if(iter==1){
         cat("estimation ongoing.")
       } else if(iter%%50==0){
         cat("\nestimation ongoing")
-      } else{
+      } else if(iter%%10==0){
         cat(".")
       }
-      conv_stat$ll_value[iter] <- ll_this
-      conv_stat$conv_cr[iter] <- diff_ll
     }
+    conv_stat$ll_value[iter] <- ll_this
+    conv_stat$conv_cr[iter]   <- diff_ll
     iter = iter + 1
   }
+  conv_stat <- map(conv_stat, ~ .x[is.finite(.x)])
 
   # finalize with M-step to get parameter estimates corresponding to the last iteration
   out_m <- max_step(out_smooth = out_e, tmpl_ss = tmpl_ss)
 
   return(list(ssm_final = out_m$model_new,
-              Sigma = out_e$Q,
-              ll_val = ll_this,
+              theta0    = out_m$params_new,
+              Sigma     = out_e$Q,
+              ll_val    = ll_this,
               conv_stat = conv_stat))
 }
 
@@ -97,13 +108,13 @@ update_em2 = function(params_deep_init, sigma_init,
 #' @keywords internal
 smoothed_moments8 = function(stsp_mod, Sigma, data_wide, only_ll = FALSE){
 
-  ABCD <- stsp_mod$sys %>% unclass
-  sigma_noise <- stsp_mod$sigma_L %>% unclass
+  ABCD <- unclass(stsp_mod$sys)
+  sigma_noise <- unclass(stsp_mod$sigma_L)
   # Integer-valued params
-  dim_in = dim(Sigma)[1]
-  n_obs = dim(data_wide)[2]
-  dim_out = attr(stsp_mod$sys, "order")[1]
-  dim_state = attr(stsp_mod$sys, "order")[3]
+  dim_in    <- dim(Sigma)[1]
+  n_obs     <- dim(data_wide)[2]
+  dim_out   <- attr(stsp_mod$sys, "order")[1]
+  dim_state <- attr(stsp_mod$sys, "order")[3]
 
   # Extract the state space matrices
   A = ABCD[1:dim_state, 1:dim_state]
@@ -200,17 +211,18 @@ smoothed_moments8 = function(stsp_mod, Sigma, data_wide, only_ll = FALSE){
 #'
 max_step <- function(out_smooth, tmpl_ss){
 
-  dim_in <- out_smooth$dim_in
-  dim_out <- out_smooth$dim_out
+  dim_in    <- out_smooth$dim_in
+  dim_out   <- out_smooth$dim_out
   dim_state <- out_smooth$dim_state
 
-  H_A = tmpl_ss$A$H_A
-  h_A = tmpl_ss$A$h_A
-  H_C = tmpl_ss$C$H_C
-  h_C = tmpl_ss$C$h_C
-  H = tmpl_ss$tmpl$H
-  h = tmpl_ss$tmpl$h
-  xpx = tmpl_ss$tmpl$xpx
+  H_A    <- tmpl_ss$A$H_A
+  H_A_tp <- t(H_A)
+  h_A    <- tmpl_ss$A$h_A
+  H_C    <- tmpl_ss$C$H_C
+  H_C_tp <- Matrix::t(H_C)
+  h_C    <- tmpl_ss$C$h_C
+  H      <- tmpl_ss$tmpl$H
+  h      <- tmpl_ss$tmpl$h
 
   # GLS regression for deep parameters in A
   # restrict all the other prms of Q to zero apart from those in the upper left dim_in x dim_in block
@@ -220,22 +232,24 @@ max_step <- function(out_smooth, tmpl_ss){
 
   # setting the tolerance value in the generalized inverse function below helps to avoid
   # numerical instabilities associated with the ill-conditioned matrix subject to inversion
-  deep_A1 <- corpcor::pseudoinverse(t(H_A) %*% (var_ss_l1 %x% Q_inv) %*% H_A, tol = 1e-2)
-  deep_A2_1 <- t(H_A) %*% (cov_ss_l1_t %x% Q_inv) %*% c(diag(dim_state))
-  deep_A2_2 <- t(H_A) %*% (var_ss_l1 %x% Q_inv) %*% h_A
-  deep_A <- deep_A1 %*% (deep_A2_1 - deep_A2_2)
+  meat_A    <- var_ss_l1 %x% Q_inv
+  deep_A1   <- corpcor::pseudoinverse(H_A_tp %*% meat_A %*% H_A, tol = 1e-2)
+  deep_A2_1 <- H_A_tp %*% (cov_ss_l1_t %x% Q_inv) %*% c(diag(dim_state))
+  deep_A2_2 <- H_A_tp %*% meat_A %*% h_A
+  deep_A    <- deep_A1 %*% (deep_A2_1 - deep_A2_2)
 
   A = matrix(h_A + H_A %*% deep_A, nrow = dim_state, ncol = dim_state)
 
   # GLS regression for deep parameters in C
-  R_inv <- solve(out_smooth$sigma_noise)
-  var_ss_t = out_smooth$var_ss_t
-  cov_s_t_T_yt = out_smooth$cov_s_t_T_yt
+  R_inv        <- solve(out_smooth$sigma_noise)
+  var_ss_t     <- out_smooth$var_ss_t
+  cov_s_t_T_yt <- out_smooth$cov_s_t_T_yt
 
-  deep_C1 <- solve(t(H_C) %*% (var_ss_t %x% R_inv) %*% H_C)
-  deep_C2_1 <- t(H_C) %*% (cov_s_t_T_yt %x% R_inv) %*% c(diag(dim_out))
-  deep_C2_2 <- t(H_C) %*% (var_ss_t %x% R_inv) %*% h_C
-  deep_C <- deep_C1 %*% (deep_C2_1-deep_C2_2)
+  meat_C    <- var_ss_t %x% R_inv
+  deep_C1   <- corpcor::pseudoinverse(H_C_tp %*% meat_C %*% H_C, tol = 1e-2)
+  deep_C2_1 <- H_C_tp %*% (cov_s_t_T_yt %x% R_inv) %*% c(diag(dim_out))
+  deep_C2_2 <- H_C_tp %*% meat_C %*% h_C
+  deep_C    <- deep_C1 %*% (deep_C2_1-deep_C2_2)
 
   C = matrix(h_C + H_C %*% deep_C, nrow = dim_out, ncol = dim_state)
 
@@ -245,7 +259,8 @@ max_step <- function(out_smooth, tmpl_ss){
   ABCD = cbind(rbind(A, C), BD)
 
   prm_vec <- c(as.vector(ABCD), as.vector(out_smooth$sigma_noise))
-  params_new <- solve(xpx, crossprod(H, prm_vec - h)) # this line extracts the deep parameters
+  params_new <- Matrix::solve(tmpl_ss$tmpl$xpx,
+                              Matrix::crossprod(H, prm_vec - h)) # this line extracts the deep parameters
 
   model_new <- fill_template(params_new, tmpl_ss$tmpl)
 

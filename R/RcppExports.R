@@ -27,5 +27,5 @@ lyapunov_Jacobian_cpp <- function(A, Q, P, dA, dQ, J, lambda_r, lambda_i, stop_i
 
 # Register entry points for exported C++ functions
 methods::setLoadAction(function(ns) {
-    .Call('_rmfd4dfm_RcppExport_registerCCallable', PACKAGE = 'rmfd4dfm')
+    .Call(`_rmfd4dfm_RcppExport_registerCCallable`)
 })

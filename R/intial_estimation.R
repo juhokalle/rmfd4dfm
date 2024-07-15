@@ -107,7 +107,8 @@ init_vals <- function(irf_obj, nu, degs = NULL, tmpl_mod){
 
   # obtain the vector of initial values
   prm_vec <- c(as.vector(ss_init), as.vector(diag(dim_out))) # set sigma_noise to I_n
-  prms_out <- solve(tmpl_mod$xpx, crossprod(tmpl_mod$H, prm_vec - tmpl_mod$h))
+  prms_out <- Matrix::solve(tmpl_mod$xpx,
+                            Matrix::crossprod(tmpl_mod$H, prm_vec - tmpl_mod$h))
 
   return(list(prms_out = prms_out,
               sigma = tcrossprod(irf_obj$noise_L)))
@@ -132,19 +133,22 @@ init_vals <- function(irf_obj, nu, degs = NULL, tmpl_mod){
 #' \item{sigma}{\code{q x q} initial error covariance matrix}
 #'
 #' @keywords internal
+
 init_wrap = function(data, nu, degs = NULL, tmpl_mod, reg_prm = NULL){
 
-  n_obs <- dim(data)[1]
-  dim_out <- dim(data)[2]
-  dim_in <- length(nu)
-  dim_state <- max(nu)*dim_in # minimal state dimension
-  regu_mat <- matrix(0, nrow = n_obs, ncol = dim_out)
-  iter <- 0
+  n_obs     <- dim(data)[1]
+  dim_out   <- dim(data)[2]
+  dim_in    <- length(nu)
+  dim_state <- tmpl_mod$order[3] #max(nu)*dim_in # minimal state dimension
+  regu_mat  <- matrix(0, nrow = n_obs, ncol = dim_out)
+  iter      <- 0
   while(iter == 0 || inherits(ssm_sq, 'try-error')){
     # fill regularization matrix if so specified
     if(!is.null(reg_prm)) regu_mat[] <- stats::rnorm(n_obs*dim_out, 0, 10^(iter-reg_prm))
-    ssm_sq <- est_stsp_ss(obj = data + regu_mat, method = 'cca',
-                          s.max = dim_state, mean_estimate = "zero",
+    ssm_sq <- est_stsp_ss(obj = data + regu_mat,
+                          method = 'cca',
+                          s.max = dim_state,
+                          mean_estimate = "zero",
                           estorder = estorder_max) %>% try(silent=TRUE)
     if(is.null(reg_prm)) reg_prm <- 8
     iter <- iter + 1
@@ -157,7 +161,7 @@ init_wrap = function(data, nu, degs = NULL, tmpl_mod, reg_prm = NULL){
   inval <- init_vals(irf_obj = irf_norm, nu = nu, degs = degs, tmpl_mod = tmpl_mod)
   # drop the last value of the initial values as it contains the sigma_noise prm,
   # which is calculated separately depending on the estimation scheme
-  params0 <- c(utils::head(inval$prms_out, -1), mean(diag(sigma_noise)))
+  params0 <- rbind(utils::head(inval$prms_out, -1), mean(diag(sigma_noise)))
   return(list(params0 = params0, sigma = inval$sigma))
 }
 
@@ -214,7 +218,6 @@ boot_init <- function(data, nu, degs = NULL, reg_prm = 6, nrep = 1, tmpl_mod = N
     tmpl_mod <- tmpl_rmfd_echelon_ss(dim_out = ncol(data),
                                      nu = nu,
                                      degs = degs)
-    tmpl_mod$tmpl$xpx <- crossprod(tmpl_mod$tmpl$H)
   }
 
   boot_list <- replicate(nrep, init_wrap(data = data,
