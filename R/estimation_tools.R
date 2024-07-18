@@ -213,10 +213,19 @@ estim_wrap <- function(df,
   rmfd_em$IC2  <- -rmfd_em$ll_val + sum(nu)*e*log(min(nvar,nobs))
   rmfd_em$IC3  <- -rmfd_em$ll_val + sum(nu)*(log(min(nvar,nobs))/min(nvar,nobs))
 
-  # pen <- rmfd_em$npar/nobs
-  # rmfd_em$aic  <- -2*rmfd_em$ll_val + 2*pen
-  # rmfd_em$bic  <- -2*rmfd_em$ll_val + log(nobs)*pen
-  # rmfd_em$hqic <- -2*rmfd_em$ll_val + 2*log(log(nobs))*pen
+  rmfd_em$IC4  <- -rmfd_em$ll_val + rmfd_em$npar*e*log(1/e)
+  rmfd_em$IC5  <- -rmfd_em$ll_val + rmfd_em$npar*e*log(min(nvar,nobs))
+  rmfd_em$IC6  <- -rmfd_em$ll_val + rmfd_em$npar*(log(min(nvar,nobs))/min(nvar,nobs))
+
+  pen <- sum(nu)/nobs
+  rmfd_em$IC7 <- -2*rmfd_em$ll_val + 2*pen
+  rmfd_em$IC8 <- -2*rmfd_em$ll_val + log(nobs)*pen
+  rmfd_em$IC9 <- -2*rmfd_em$ll_val + 2*log(log(nobs))*pen
+
+  pen <- rmfd_em$npar/nobs
+  rmfd_em$IC10 <- -2*rmfd_em$ll_val + 2*pen
+  rmfd_em$IC11 <- -2*rmfd_em$ll_val + log(nobs)*pen
+  rmfd_em$IC12 <- -2*rmfd_em$ll_val + 2*log(log(nobs))*pen
 
   # transform the resulting stsp system into RMFD model
  rmfd_em$rmfd_final <- stsp2rmfd(stspsys = rmfd_em$ssm_final$sys,
